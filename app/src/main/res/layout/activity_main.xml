@@ -3,10 +3,36 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="40sp"
+        android:src="@drawable/shape"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/undraw_family_6gj8_1"
         android:layout_gravity="center"
-        android:text="Xin chao ae"/>
+        android:layout_marginTop="58dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/slash_screen_text1"
+        android:textSize="36sp"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:layout_marginTop="58dp"
+        android:textColor="@color/black"/>
+    <Button
+        android:layout_width="362dp"
+        android:text="@string/get_started_btn"
+        android:layout_marginBottom="72dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+
+        android:background="@color/black"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
