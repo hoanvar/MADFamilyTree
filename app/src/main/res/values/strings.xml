@@ -2,4 +2,6 @@
     <string name="app_name">MADFamilyTree</string>
     <string name="slash_screen_text1">Dành thời gian cho gia đình cùng GPO</string>
     <string name="get_started_btn">Bắt đầu</string>
+    <string name="image_description">Node Image</string>
+    <string name="welcome_back_text">Chào mừng quay lại</string>
 </resources>
