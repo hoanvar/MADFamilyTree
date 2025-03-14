@@ -23,6 +23,7 @@ class MainActivity : BaseActivity() {
         binding.startBtn.setOnClickListener {
             startActivity(Intent(this@MainActivity,LoginActivity::class.java))
         }
+
     }
 }
 

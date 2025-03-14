@@ -4,4 +4,11 @@
     <string name="get_started_btn">Bắt đầu</string>
     <string name="image_description">Node Image</string>
     <string name="welcome_back_text">Chào mừng quay lại</string>
+    <string name="home_item_text">Trang chủ</string>
+    <string name="album_item_text">Album</string>
+    <string name="profile_item_text">Cá nhân</string>
+    <string name="tree_item_text">Gia phả</string>
+    <string name="add_item_description">add new family tree</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
