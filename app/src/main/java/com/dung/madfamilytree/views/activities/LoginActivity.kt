@@ -22,6 +22,7 @@ class LoginActivity : BaseActivity() {
     fun setUpEvent(){
         binding.registorLink.setOnClickListener{
             startActivity(Intent(this@LoginActivity,RegistorActivity::class.java))
+            finish()
         }
         binding.loginBtn.setOnClickListener {
             startActivity(Intent(this@LoginActivity,HomeActivity::class.java))
