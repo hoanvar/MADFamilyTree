@@ -9,5 +9,14 @@
         android:id="@+id/homeFragment"
         android:name="com.dung.madfamilytree.views.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_albulmFragment"
+            app:destination="@id/albulmFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/albulmFragment"
+        android:name="com.dung.madfamilytree.views.fragments.AlbulmFragment"
+        android:label="fragment_albulm"
+        tools:layout="@layout/fragment_albulm" />
 </navigation>
