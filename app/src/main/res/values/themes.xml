@@ -13,5 +13,9 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="android:textSize">@dimen/default_text_size</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 </resources>

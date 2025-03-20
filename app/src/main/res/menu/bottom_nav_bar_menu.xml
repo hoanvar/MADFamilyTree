@@ -5,7 +5,7 @@
         android:icon="@drawable/home_icon"
         android:title="@string/home_item_text"/>
     <item
-        android:id="@+id/albulmFragment"
+        android:id="@+id/albumFragment"
         android:icon="@drawable/album_icon"
         android:title="@string/album_item_text"/>
     <item

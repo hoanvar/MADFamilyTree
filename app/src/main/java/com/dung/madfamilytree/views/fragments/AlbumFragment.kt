@@ -1,17 +1,16 @@
 package com.dung.madfamilytree.views.fragments
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import androidx.core.content.ContextCompat
 import com.dung.madfamilytree.R
-import com.dung.madfamilytree.databinding.FragmentHomeBinding
-import com.dung.madfamilytree.views.customviews.CustomImageButton
+import com.dung.madfamilytree.adapters.AlbumItemAdapter
+import com.dung.madfamilytree.databinding.FragmentAlbumBinding
+import com.dung.madfamilytree.models.Album
+import com.dung.madfamilytree.views.activities.CreateNewAlbumActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,26 +19,26 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
+ * Use the [AlbumFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : Fragment() {
-
-    private var _binding: FragmentHomeBinding? = null
+class AlbumFragment : Fragment() {
+    private var _binding: FragmentAlbumBinding? = null
     private val binding
         get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentAlbumBinding.inflate(layoutInflater, container, false)
         // Inflate the layout for this fragment
-        _binding = FragmentHomeBinding.inflate(layoutInflater,container,false)
-        binding.notificationBtn.numOfNoti = 10
+        val adapter = AlbumItemAdapter {
+            activity?.startActivity(Intent(requireContext(),CreateNewAlbumActivity::class.java))
+        }
+        adapter.data = listOf(Album("hello"),Album("Hello"))
+        binding.albumRecycleView.adapter = adapter
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }

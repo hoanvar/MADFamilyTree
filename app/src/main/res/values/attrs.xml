@@ -3,4 +3,7 @@
     <declare-styleable name="FamilyTreeView">
 
     </declare-styleable>
+    <declare-styleable name="CustomImageButton">
+        <attr name="custom_background_color" format="color"/>
+    </declare-styleable>
 </resources>

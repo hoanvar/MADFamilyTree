@@ -10,6 +10,7 @@
         app:backgroundTint="@color/white"
         android:layout_height="wrap_content"
         app:fabAlignmentMode="center"
+        app:contentInsetStart="0dp"
         android:layout_gravity="bottom"
         >
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -17,14 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:labelVisibilityMode="labeled"
-
             android:elevation="0dp"
             app:backgroundTint="@color/white"
             android:background="@drawable/flaten_background"
             android:layout_gravity="center"
             app:itemTextColor="@color/selector_bottom_nav_bar"
             app:itemIconTint="@color/selector_bottom_nav_bar"
-            android:layout_marginEnd="12dp"
             app:menu="@menu/bottom_nav_bar_menu" />
 
     </com.google.android.material.bottomappbar.BottomAppBar>

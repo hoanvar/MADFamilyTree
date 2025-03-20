@@ -68,12 +68,13 @@
         android:layout_width="match_parent"
         android:layout_height="61dp"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="25dp"
+        android:layout_marginBottom="19dp"
         android:background="@drawable/round_input_shape"
         android:backgroundTint="@color/secondary_color"
         android:ems="10"
         android:fontFamily="@font/poppins_semibold"
+        android:textSize="@dimen/small_text_size"
         android:hint="Tài khoản"
         android:inputType="text"
         android:paddingStart="33dp"
@@ -83,8 +84,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
+        app:layout_constraintTop_toTopOf="@+id/guideline5"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
         android:id="@+id/password"
@@ -92,7 +93,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
-        android:layout_marginBottom="25dp"
         android:background="@drawable/round_input_shape"
         android:backgroundTint="@color/secondary_color"
         android:ems="10"
@@ -102,8 +102,8 @@
         android:paddingStart="33dp"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/login_btn"
+        android:textSize="@dimen/small_text_size"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -158,4 +158,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8369427" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.66624206" />
 </androidx.constraintlayout.widget.ConstraintLayout>

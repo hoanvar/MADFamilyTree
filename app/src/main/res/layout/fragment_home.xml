@@ -33,16 +33,6 @@
         app:layout_constraintStart_toEndOf="@+id/shapeableImageView"
         app:layout_constraintTop_toTopOf="@+id/shapeableImageView" />
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/notification_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView7"
-        app:layout_constraintVertical_bias="0.0" />
-
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/shapeableImageView"
         android:layout_width="70dp"
@@ -53,4 +43,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/roundImageView" />
+
+    <com.dung.madfamilytree.views.customviews.CustomImageButton
+        android:id="@+id/notification_btn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/round_input_shape"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/notification_icon"
+        app:backgroundTint="@android:color/transparent"
+        app:custom_background_color="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/textView7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView7" />
 </androidx.constraintlayout.widget.ConstraintLayout>

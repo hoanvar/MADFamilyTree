@@ -12,11 +12,11 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_albulmFragment"
-            app:destination="@id/albulmFragment" />
+            app:destination="@id/albumFragment" />
     </fragment>
     <fragment
-        android:id="@+id/albulmFragment"
-        android:name="com.dung.madfamilytree.views.fragments.AlbulmFragment"
-        android:label="fragment_albulm"
-        tools:layout="@layout/fragment_albulm" />
+        android:id="@+id/albumFragment"
+        android:name="com.dung.madfamilytree.views.fragments.AlbumFragment"
+        android:label="fragment_album"
+        tools:layout="@layout/fragment_album" />
 </navigation>
