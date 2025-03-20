@@ -56,6 +56,7 @@ class CustomImageButton : androidx.appcompat.widget.AppCompatImageButton {
     private var notiCenterY = 0f
     private var notiTextX = 0f
     private var notiTextY = 0f
+    private var notiRadios = 0f
     private var isAnimating = false
 
     private val backgroundPaint = Paint()
@@ -87,8 +88,9 @@ class CustomImageButton : androidx.appcompat.widget.AppCompatImageButton {
         notiPaint.style = Paint.Style.FILL
         notiPaint.isAntiAlias = true
 
-        notiCenterX = circleCenterX + NOTI_OFFSET_PX
-        notiCenterY = circleCenterY - NOTI_OFFSET_PX
+        notiCenterX = circleCenterX + dpToPx(NOTI_OFFSET_PX)
+        notiCenterY = circleCenterY - dpToPx(NOTI_OFFSET_PX)
+        notiRadios = dpToPx(NOTI_RADIOS).toFloat()
 
         notiTextX = notiCenterX
         val rect = Rect()
@@ -206,8 +208,8 @@ class CustomImageButton : androidx.appcompat.widget.AppCompatImageButton {
 
     companion object {
         const val MAX_CORNER_ROTATE = 30f
-        const val NOTI_OFFSET_PX = 27f
-        const val NOTI_RADIOS = 15f
+        const val NOTI_OFFSET_PX = 15f
+        const val NOTI_RADIOS = 20f
     }
 
     fun dpToPx(dp: Float): Int {

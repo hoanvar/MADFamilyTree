@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.dung.madfamilytree.R
+import com.dung.madfamilytree.adapters.ImageItemAdapter
 import com.dung.madfamilytree.databinding.ActivityCreateNewAlbumBinding
+import com.dung.madfamilytree.models.Image
 
 class CreateNewAlbumActivity : BaseActivity() {
     private lateinit var binding: ActivityCreateNewAlbumBinding
@@ -16,7 +18,9 @@ class CreateNewAlbumActivity : BaseActivity() {
         binding = ActivityCreateNewAlbumBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpToolBar()
-
+        val adapter = ImageItemAdapter()
+        adapter.data = listOf(Image("hello"),Image("hello"))
+        binding.imageRecycleView.adapter = adapter
 
     }
     fun setUpToolBar(){
