@@ -202,14 +202,14 @@ class CustomImageButton : androidx.appcompat.widget.AppCompatImageButton {
     fun drawNoti(canvas: Canvas) {
         notiPaint.color = Color.RED
         canvas.drawCircle(notiCenterX, notiCenterY, NOTI_RADIOS, notiPaint)
-        notiPaint.color = Color.WHITE
-        canvas.drawText(_numOfNoti.toString(), notiTextX, notiTextY, notiPaint)
+//        notiPaint.color = Color.WHITE
+//        canvas.drawText(_numOfNoti.toString(), notiTextX, notiTextY, notiPaint)
     }
 
     companion object {
         const val MAX_CORNER_ROTATE = 30f
-        const val NOTI_OFFSET_PX = 15f
-        const val NOTI_RADIOS = 20f
+        const val NOTI_OFFSET_PX = 8f
+        const val NOTI_RADIOS = 5f
     }
 
     fun dpToPx(dp: Float): Int {

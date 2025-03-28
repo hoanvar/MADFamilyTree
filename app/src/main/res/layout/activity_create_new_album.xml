@@ -100,27 +100,14 @@
             <EditText
                 android:id="@+id/album_story"
                 android:layout_width="match_parent"
-                android:gravity="top|start"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_button"
-                android:ems="10"
-                android:fontFamily="@font/poppins_semibold"
-                android:inputType="textMultiLine"
-                android:maxLines="10"
-                android:minLines="5"
-                android:scrollbars="vertical"
-                android:paddingVertical="23dp"
-                android:paddingHorizontal="33dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/text_hint_color"
-                android:textSize="@dimen/small_text_size"
-                android:overScrollMode="ifContentScrolls"
-                app:backgroundTint="@color/secondary_color" />
+                style="@style/editTextStyle"
+                 />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/image_recycle_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="2" />
