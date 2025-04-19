@@ -23,4 +23,9 @@
         <item name="android:textColorHint">@color/text_hint_color</item>
         <item name="backgroundTint">@color/secondary_color</item>
     </style>
+    <style name="popup_title">
+        <item name="android:textSize">32dp</item>
+        <item name="android:textColor">@color/popup_title_red</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+    </style>
 </resources>

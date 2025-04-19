@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dung.madfamilytree.R
 import com.dung.madfamilytree.models.Album
 
-class AlbumItemAdapter(val listener:()->Unit) : RecyclerView.Adapter<AlbumItemAdapter.AlbumItemViewHolder>() {
+class AlbumItemAdapter(val listener:(position: Int)->Unit) : RecyclerView.Adapter<AlbumItemAdapter.AlbumItemViewHolder>() {
     var data = listOf<Album>()
         set(value) {
             field = value
@@ -28,9 +28,9 @@ class AlbumItemAdapter(val listener:()->Unit) : RecyclerView.Adapter<AlbumItemAd
                 }
             }
         }
-        fun bind(data: Album,listener: ()->Unit){
+        fun bind(position: Int,listener: (position: Int)->Unit){
             rootView.setOnClickListener{
-                listener()
+                listener(position)
             }
         }
     }
@@ -49,6 +49,6 @@ class AlbumItemAdapter(val listener:()->Unit) : RecyclerView.Adapter<AlbumItemAd
     }
 
     override fun onBindViewHolder(holder: AlbumItemViewHolder, position: Int) {
-        holder.bind(data[position],listener)
+        holder.bind(position,listener)
     }
 }

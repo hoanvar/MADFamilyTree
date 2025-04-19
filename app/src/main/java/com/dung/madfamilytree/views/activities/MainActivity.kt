@@ -14,9 +14,10 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.startBtn.setOnClickListener {
-            Log.d("MainActivity","button clicked")
             val intent = Intent(this@MainActivity,LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
+            finish()
         }
     }
     fun setUpEvent(){

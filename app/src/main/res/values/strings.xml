@@ -9,6 +9,12 @@
     <string name="profile_item_text">Cá nhân</string>
     <string name="tree_item_text">Gia phả</string>
     <string name="add_item_description">add new family tree</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_new_album_activity_title">Tạo mới album</string>
+    <string name="image_detail_activity_title">Xem ảnh</string>
+    <string name="delete_image_btn">Xóa ảnh</string>
+    <string name="delete_image_popup_title">Xóa ảnh</string>
+    <string name="delete_image_popup_content">Bạn có chắc chắn xóa không?</string>
+    <string name="delete_image_popup_confirm_btn">Xóa</string>
+    <string name="delete_image_popup_cancle_btn">Hủy</string>
 </resources>

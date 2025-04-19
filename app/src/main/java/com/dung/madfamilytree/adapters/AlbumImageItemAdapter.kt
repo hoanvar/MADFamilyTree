@@ -1,14 +1,26 @@
 package com.dung.madfamilytree.adapters
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.dung.madfamilytree.R
+import com.dung.madfamilytree.callbacks.AlbumImageItemCallBack
 import com.dung.madfamilytree.models.Image
+import com.google.android.material.imageview.ShapeableImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class AlbumImageItemAdapter : RecyclerView.Adapter<AlbumImageItemAdapter.AlbumImageItemViewHolder>() {
+class AlbumImageItemAdapter(val listener: (Image) -> Unit) : ListAdapter<Image,AlbumImageItemAdapter.AlbumImageItemViewHolder>(AlbumImageItemCallBack()) {
     class AlbumImageItemViewHolder(val rootView: View) : RecyclerView.ViewHolder(rootView){
+        val imageView = rootView.findViewById<ShapeableImageView>(R.id.image)
         companion object{
             fun inflate(parent: ViewGroup,viewType: Int): AlbumImageItemViewHolder{
                 val layoutInflater = LayoutInflater.from(parent.context)
@@ -22,12 +34,19 @@ class AlbumImageItemAdapter : RecyclerView.Adapter<AlbumImageItemAdapter.AlbumIm
                 }
             }
         }
-    }
-    var data = listOf<Image>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
+        fun bind(image: Image,listener: (Image) -> Unit){
+            rootView.setOnClickListener {
+                listener(image)
+            }
+            image.ImageURI?.let {
+                val context = imageView.context
+                Glide.with(imageView.context)
+                    .load(it)
+                    .placeholder(R.drawable.undraw_family_6gj8_1)
+                    .into(imageView)
+            }
         }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumImageItemViewHolder {
         return AlbumImageItemViewHolder.inflate(parent,viewType)
@@ -38,11 +57,8 @@ class AlbumImageItemAdapter : RecyclerView.Adapter<AlbumImageItemAdapter.AlbumIm
         else return 1
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
 
     override fun onBindViewHolder(holder: AlbumImageItemViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        holder.bind(getItem(position),listener)
     }
 }

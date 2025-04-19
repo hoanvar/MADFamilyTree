@@ -2,6 +2,7 @@ package com.dung.madfamilytree.views.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import com.dung.madfamilytree.R
 import com.dung.madfamilytree.adapters.AlbumItemAdapter
 import com.dung.madfamilytree.databinding.FragmentAlbumBinding
 import com.dung.madfamilytree.models.Album
+import com.dung.madfamilytree.views.activities.AlbumDetailActivity
 import com.dung.madfamilytree.views.activities.CreateNewAlbumActivity
 
 // TODO: Rename parameter arguments, choose names that match
@@ -34,7 +36,11 @@ class AlbumFragment : Fragment() {
         _binding = FragmentAlbumBinding.inflate(layoutInflater, container, false)
         // Inflate the layout for this fragment
         val adapter = AlbumItemAdapter {
+            if(it == 0)
             activity?.startActivity(Intent(requireContext(),CreateNewAlbumActivity::class.java))
+            else{
+                activity?.startActivity(Intent(requireContext(),AlbumDetailActivity::class.java))
+            }
         }
         adapter.data = listOf(Album("hello"),Album("Hello"))
         binding.albumRecycleView.adapter = adapter

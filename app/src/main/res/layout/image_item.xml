@@ -7,7 +7,7 @@
     android:layout_marginBottom="5dp"
     android:layout_height="150dp">
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/undraw_mobile_login_4ntr_1"/>
