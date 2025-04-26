@@ -16,16 +16,24 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ReportFragment.Companion.reportFragment
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.dung.madfamilytree.R
 import com.dung.madfamilytree.databinding.ActivityImageDetailBinding
 import com.dung.madfamilytree.databinding.DeleteImagePopupBinding
+import com.dung.madfamilytree.dtos.ImageDTO
+import com.dung.madfamilytree.utility.Utility
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.android.HandlerDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ImageDetailActivity : BaseActivity() {
-    companion object{
+    companion object {
         const val IMAGE_URI = "image_uri"
+        var imageUrl = ""
     }
+
     private lateinit var binding: ActivityImageDetailBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +45,16 @@ class ImageDetailActivity : BaseActivity() {
         setUpToolbar()
         setUpEvent()
     }
-    fun setUpImage(){
+
+    fun setUpImage() {
+        imageUrl = intent.getStringExtra(IMAGE_URI)!!
         Glide.with(binding.imageView.context)
-            .load(intent.getStringExtra(IMAGE_URI))
+            .load(imageUrl)
             .placeholder(R.drawable.default_icon_img)
             .fitCenter()
             .into(binding.imageView)
     }
+
     fun setUpEvent() {
         binding.deleteBtn.setOnClickListener {
             val localBinding = DeleteImagePopupBinding.inflate(layoutInflater)
@@ -77,7 +88,11 @@ class ImageDetailActivity : BaseActivity() {
             }
             localBinding.confirmBtn.setOnClickListener {
                 popupWindow.dismiss()
-                finish()
+                lifecycleScope.launch(Dispatchers.IO)
+                {
+                    Utility.deleteImageList(listOf(ImageDTO(url = imageUrl)))
+                    finish()
+                }
             }
         }
     }
