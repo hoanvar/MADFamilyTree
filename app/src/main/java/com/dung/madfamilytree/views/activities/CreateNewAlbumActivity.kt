@@ -1,5 +1,6 @@
 package com.dung.madfamilytree.views.activities
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
@@ -21,6 +22,7 @@ import com.dung.madfamilytree.dtos.InvokingDTO
 import com.dung.madfamilytree.models.Image
 import com.dung.madfamilytree.utility.Utility
 import com.dung.madfamilytree.viewmodels.CreateNewAlbumViewModel
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,30 +67,57 @@ class CreateNewAlbumActivity : BaseActivity() {
         binding.imageRecycleView.adapter = adapter
 
         binding.createAlbumBtn.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.upLoadImages(this@CreateNewAlbumActivity)
-                Utility.db?.collection("Album")?.add(
-                    AlbumDTO(name = binding.albumName.text.toString(),
-                        place = binding.albumPlace.text.toString(),
-                        story = binding.albumStory.text.toString())
-                )?.addOnSuccessListener { albumRef ->
+            var valid = true
+            if (binding.albumName.text.toString().equals("")) {
+                binding.albumName.setHintTextColor(Color.RED)
+                valid = false
+            }
+            if (binding.albumPlace.text.toString().equals("")) {
+                binding.albumPlace.setHintTextColor(Color.RED)
+                valid = false
+            }
+            if (binding.albumStory.text.toString().equals("")) {
+                binding.albumStory.setHintTextColor(Color.RED)
+                valid = false
+            }
+            if (valid) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.upLoadImages(this@CreateNewAlbumActivity)
+                    Utility.db?.collection("Album")?.add(
+                        AlbumDTO(
+                            name = binding.albumName.text.toString(),
+                            place = binding.albumPlace.text.toString(),
+                            story = binding.albumStory.text.toString()
+                        )
+                    )?.addOnSuccessListener { albumRef ->
 //                    var count = 0
-                    Utility.db?.collection("Invoking")
-                        ?.add(InvokingDTO(albumRef,Utility.db?.collection("Account")?.document(Utility.accountId)))
-                        ?.addOnSuccessListener {
-                            for(imageUrl in viewModel.imageUrlList){
-                                Utility.db?.collection("Image")
-                                    ?.add(ImageDTO(url = imageUrl, album = albumRef))
-//                                    ?.addOnSuccessListener { imageRef ->
-//                                        if(count == 0){
-//                                            albumRef.update("thumbnail_img",imageRef)
-//                                            count++
-//                                        }
-//                                    }
+                        Utility.db?.collection("Invoking")
+                            ?.add(
+                                InvokingDTO(
+                                    albumRef,
+                                    Utility.db?.collection("Account")?.document(Utility.accountId)
+                                )
+                            )
+                            ?.addOnSuccessListener {
+                                var count = 0
+                                for (imageUrl in viewModel.imageUrlList) {
+                                    count++
+                                    Utility.db?.collection("Image")
+                                        ?.add(hashMapOf(
+                                            "url" to imageUrl,
+                                            "album" to albumRef,
+                                            "uploadTime" to FieldValue.serverTimestamp()
+                                        ))
+                                    ?.addOnSuccessListener { imageRef ->
+                                        if(count == viewModel.imageUrlList.size){
+                                            finish()
+                                        }
+                                    }
 
+                                }
                             }
-                        }
 
+                    }
                 }
             }
         }

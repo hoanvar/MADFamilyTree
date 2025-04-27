@@ -44,7 +44,7 @@ class AlbumFragment : Fragment() {
         // Inflate the layout for this fragment
 
         viewModel = ViewModelProvider(this,AlbumViewModelFactory(Utility.db!!)).get(AlbumViewModel::class)
-        viewModel.getAlbum()
+//        viewModel.getAlbum()
         val adapter = AlbumItemAdapter {
             if(it == 0)
             activity?.startActivity(Intent(requireContext(),CreateNewAlbumActivity::class.java))
@@ -59,6 +59,11 @@ class AlbumFragment : Fragment() {
         })
         binding.albumRecycleView.adapter = adapter
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.getAlbum()
     }
 
 }

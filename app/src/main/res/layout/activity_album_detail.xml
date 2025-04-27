@@ -12,13 +12,13 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:backgroundTint="@android:color/transparent"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/album_setting_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -125,5 +125,18 @@
             android:text="Xóa ảnh" />
 
     </LinearLayout>
+
+    <com.dung.madfamilytree.views.customviews.CustomImageButton
+        android:id="@+id/album_setting_btn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/setting"
+        android:background="@drawable/round_input_shape"
+        app:backgroundTint="@android:color/transparent"
+        app:custom_background_color="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
