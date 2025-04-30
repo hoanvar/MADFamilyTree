@@ -68,7 +68,7 @@ class CustomImageButton : androidx.appcompat.widget.AppCompatImageButton {
         get() = _numOfNoti
         set(value) {
             _numOfNoti = value
-            if(!isAnimating){
+            if (!isAnimating) {
                 startNewNotiAnimation(500)
             }
         }
@@ -182,6 +182,7 @@ class CustomImageButton : androidx.appcompat.widget.AppCompatImageButton {
             return super.onTouchEvent(event)
         }
         if (event.action == MotionEvent.ACTION_DOWN) {
+            performClick()
             startClickAnimation()
         }
         return true

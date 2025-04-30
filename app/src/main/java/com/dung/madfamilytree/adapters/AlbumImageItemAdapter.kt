@@ -127,7 +127,7 @@ class AlbumImageItemAdapter(val listener: (ImageDTO) -> Unit, val viewModel: Alb
         }
 
         fun bind(image: ImageDTO, listener: (ImageDTO) -> Unit) {
-            if (!image.url.equals("")) {
+            if (!image.url.equals("") && !image.url.equals("holder")) {
                 Glide.with(imageView.context)
                     .load(image.url)
                     .placeholder(R.drawable.undraw_family_6gj8_1)
@@ -169,7 +169,7 @@ class AlbumImageItemAdapter(val listener: (ImageDTO) -> Unit, val viewModel: Alb
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == 0) return 0
+        if(getItem(position).url.equals(""))return 0
         else return 1
     }
 

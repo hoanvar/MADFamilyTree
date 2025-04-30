@@ -84,10 +84,10 @@ class CreateNewAlbumActivity : BaseActivity() {
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.upLoadImages(this@CreateNewAlbumActivity)
                     Utility.db?.collection("Album")?.add(
-                        AlbumDTO(
-                            name = binding.albumName.text.toString(),
-                            place = binding.albumPlace.text.toString(),
-                            story = binding.albumStory.text.toString()
+                        hashMapOf(
+                            "name" to binding.albumName.text.toString(),
+                            "place" to binding.albumPlace.text.toString(),
+                            "story" to binding.albumStory.text.toString(),
                         )
                     )?.addOnSuccessListener { albumRef ->
 //                    var count = 0

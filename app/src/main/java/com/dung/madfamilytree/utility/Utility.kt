@@ -5,6 +5,7 @@ import com.dung.madfamilytree.dtos.AlbumDTO
 import com.dung.madfamilytree.dtos.ImageDTO
 import com.dung.madfamilytree.dtos.InvokingDTO
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -61,10 +62,26 @@ object Utility {
                             val imageDTO = doc.toObject(ImageDTO::class.java)
                             doc.reference.delete()
                             i++
-                            if(i == result.size()){
+                            if (i == result.size()) {
                                 cont.resume(null)
                             }
                         }
+                    }
+            }
+        }
+    }
+
+    suspend fun isEditable(accountId: String, albumId: String): Boolean {
+        return suspendCancellableCoroutine {cont ->
+            db?.let {
+                it.collection("Invoking")
+                    .whereEqualTo("account", it.collection("Account").document(accountId))
+                    .whereEqualTo("album", it.collection("Album").document(albumId))
+                    .get()
+                    .addOnSuccessListener { invokingSnapshots ->
+                        val invokingSnapshot = invokingSnapshots.iterator().next()
+                        val invokingDTO = invokingSnapshot.toObject(InvokingDTO::class.java)
+                        cont.resume(invokingDTO.editable)
                     }
             }
         }

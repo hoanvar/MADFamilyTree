@@ -18,15 +18,20 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AlbumDetailViewModel : ViewModel() {
 
     var recycleMode = MutableLiveData<SelectMode>(SelectMode.ONE)
+    var editable = false
     var albumId = ""
         set(value) {
             field = value
-            getAlbumInfo()
-            getAlbumImage()
+            viewModelScope.launch(Dispatchers.IO) {
+                isEditable()
+                getAlbumInfo()
+                getAlbumImage()
+            }
 
         }
     val album = MutableLiveData<AlbumDTO>(null)
@@ -41,7 +46,7 @@ class AlbumDetailViewModel : ViewModel() {
     fun addImages(context: Context, images: List<Image>) {
         val tempImageList = _imageList.value?.toMutableList()
         for (i in 0 until images.size) {
-            tempImageList?.add(ImageDTO())
+            tempImageList?.add(ImageDTO(url = "holder"))
         }
         _imageList.postValue(tempImageList?.toList())
         viewModelScope.launch(Dispatchers.IO) {
@@ -82,7 +87,12 @@ class AlbumDetailViewModel : ViewModel() {
             ?.orderBy("uploadTime", Query.Direction.ASCENDING)
             ?.get()
             ?.addOnSuccessListener { result ->
-                val tempImageList = mutableListOf(ImageDTO())
+                val tempImageList = mutableListOf<ImageDTO>()
+                if (editable) {
+                    tempImageList.add(ImageDTO())
+                }
+//                    mutableListOf(ImageDTO())
+//                    else mutableListOf()
                 for (imageSnapshot in result) {
                     val image = imageSnapshot.toObject(ImageDTO::class.java)
                     tempImageList.add(image)
@@ -90,10 +100,17 @@ class AlbumDetailViewModel : ViewModel() {
                 _imageList.value = tempImageList
             }
             ?.addOnFailureListener {
-                val tempImageList = mutableListOf(ImageDTO())
+                val tempImageList = mutableListOf<ImageDTO>()
+                if (editable) {
+                    tempImageList.add(ImageDTO())
+                }
                 _imageList.value = tempImageList
             }
 
+    }
+
+    suspend fun isEditable() {
+        editable = Utility.isEditable(Utility.accountId, albumId)
     }
 }
 

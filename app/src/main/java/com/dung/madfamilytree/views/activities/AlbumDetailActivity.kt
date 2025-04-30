@@ -101,7 +101,9 @@ class AlbumDetailActivity : BaseActivity() {
         viewModel.album.observe(this, Observer {
             if (it != null) {
                 binding.placeTv.text = it.place
+                binding.editTextTextMultiLine.text.clear()
                 binding.editTextTextMultiLine.text.append(it.story)
+                supportActionBar?.title = it.name
             }
         })
         viewModel.imageList.observe(this, Observer {
@@ -117,15 +119,38 @@ class AlbumDetailActivity : BaseActivity() {
             binding.buttonBox.visibility = if (it == SelectMode.ONE) View.GONE else View.VISIBLE
         })
         binding.albumImageRecycleView.adapter = adapter
+        binding.albumSettingBtn.setOnClickListener {
+            val intent = Intent(this, AlbumSettingActivity::class.java)
+            intent.putExtra(AlbumSettingActivity.ALBUM_ID, viewModel.albumId)
+            intent.putExtra(AlbumSettingActivity.EDITABLE, viewModel.editable)
+            albumSettingRegistor.launch(intent)
+        }
     }
+
+    val albumSettingRegistor =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+                Log.d("AlbumDetailActivity", "result")
+                if (data?.getBooleanExtra(AlbumSettingActivity.DELETED, false)!!) {
+                    finish()
+                }
+            } else {
+                Log.d("AlbumDetailActivity", "Load data")
+                viewModel.getAlbumInfo()
+                viewModel.getAlbumImage()
+            }
+        }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         finish()
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.getAlbumImage()
+
+    override fun onRestart() {
+        super.onRestart()
+
+
     }
 }

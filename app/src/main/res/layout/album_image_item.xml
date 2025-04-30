@@ -10,6 +10,7 @@
         android:id="@+id/image"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_gravity="center"
 
         android:src="@drawable/undraw_family_6gj8_1"
         app:shapeAppearanceOverlay="@style/cornerRadiosImageView">
