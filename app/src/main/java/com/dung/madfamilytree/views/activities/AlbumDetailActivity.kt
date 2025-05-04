@@ -123,6 +123,7 @@ class AlbumDetailActivity : BaseActivity() {
             val intent = Intent(this, AlbumSettingActivity::class.java)
             intent.putExtra(AlbumSettingActivity.ALBUM_ID, viewModel.albumId)
             intent.putExtra(AlbumSettingActivity.EDITABLE, viewModel.editable)
+            intent.putExtra(AlbumSettingActivity.OWNER,viewModel.album.value?.owner?.equals(Utility.db?.collection("Account")?.document(Utility.accountId)))
             albumSettingRegistor.launch(intent)
         }
     }
