@@ -1,6 +1,7 @@
 package com.dung.madfamilytree.utility
 
 import SupabaseClientProvider
+import com.dung.madfamilytree.dtos.AccountDTO
 import com.dung.madfamilytree.dtos.AlbumDTO
 import com.dung.madfamilytree.dtos.ImageDTO
 import com.dung.madfamilytree.dtos.InvokingDTO
@@ -12,6 +13,20 @@ import kotlin.coroutines.resume
 object Utility {
     var db: FirebaseFirestore? = null
     var accountId = "qeCGzYEwV5w7VYpWXtdn"
+
+    suspend fun addAccount(account: AccountDTO): String {
+        return suspendCancellableCoroutine { cont ->
+            db?.collection("Account")
+                ?.add(account)
+                ?.addOnSuccessListener { documentReference ->
+                    cont.resume(documentReference.id)
+                }
+                ?.addOnFailureListener { exception ->
+                    cont.resume("")
+                }
+        }
+    }
+
     suspend fun getAlbum(): List<AlbumDTO> {
         return suspendCancellableCoroutine { cont ->
             db?.collection("Invoking")
@@ -72,7 +87,7 @@ object Utility {
     }
 
     suspend fun isEditable(accountId: String, albumId: String): Boolean {
-        return suspendCancellableCoroutine {cont ->
+        return suspendCancellableCoroutine { cont ->
             db?.let {
                 it.collection("Invoking")
                     .whereEqualTo("account", it.collection("Account").document(accountId))
@@ -86,4 +101,37 @@ object Utility {
             }
         }
     }
+
+
+    suspend fun getTreeId(): String {
+        val account = getAccountById()
+        if(account != null){
+            return account.tree_id;
+        }else{
+            return "false";
+        }
+    }
+
+
+        suspend fun getAccountById(): AccountDTO? {
+            return suspendCancellableCoroutine { cont ->
+                db?.collection("Account")
+                    ?.document(this.accountId)
+                    ?.get()
+                    ?.addOnSuccessListener { document ->
+                        if (document != null && document.exists()) {
+                            val account = document.toObject(AccountDTO::class.java)
+                            cont.resume(account)
+                        } else {
+                            cont.resume(null)
+                        }
+                    }
+                    ?.addOnFailureListener {
+                        cont.resume(null)
+                    }
+            }
+        }
+
 }
+
+
