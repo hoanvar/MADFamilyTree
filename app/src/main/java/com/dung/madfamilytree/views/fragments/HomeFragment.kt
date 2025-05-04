@@ -2,16 +2,16 @@ package com.dung.madfamilytree.views.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import androidx.core.content.ContextCompat
-import com.dung.madfamilytree.R
+import androidx.fragment.app.Fragment
 import com.dung.madfamilytree.databinding.FragmentHomeBinding
-import com.dung.madfamilytree.views.customviews.CustomImageButton
+import com.dung.madfamilytree.utility.Utility
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,16 +26,77 @@ private const val ARG_PARAM2 = "param2"
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding
-        get() = _binding!!
+    private val binding get() = _binding!!
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentHomeBinding.inflate(layoutInflater,container,false)
-        binding.notificationBtn.numOfNoti = 10
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        // Launch coroutine to call suspend function
+        coroutineScope.launch {
+            setUp()
+        }
+    }
+
+    private suspend fun setUp() {
+        val tree_id = Utility.getTreeId()
+        Log.d("HomeFragment", "Tree ID from account: $tree_id")
+        
+        if (tree_id == "false" || tree_id.isEmpty()) {
+            Log.e("HomeFragment", "Invalid tree ID")
+            binding.treeSummary.tvFamilyName.text = ""
+            binding.treeSummary.tvAddress.text = ""
+            binding.treeSummary.tvGenerations.text = "0 đời"
+            binding.treeSummary.tvMembers.text = "0 thành viên"
+            return
+        }
+
+        try {
+            val treeDocument = Utility.db?.collection("Tree")
+                ?.document(tree_id)
+                ?.get()
+                ?.await()
+
+            if (treeDocument != null) {
+                if (treeDocument.exists()) {
+                    val treeData = treeDocument.data
+                    Log.d("HomeFragment", "Tree data: $treeData")
+
+                    // Update UI with tree data
+                    treeData?.let { data ->
+                        binding.treeSummary.tvFamilyName.text = data["tree_name"] as? String ?: ""
+                        binding.treeSummary.tvAddress.text = "Địa chỉ: Xã " + data["commune"] + " Huyện " + data["commune"] + " Tỉnh " + data["province"]
+                        binding.treeSummary.tvGenerations.text = "${data["generations"] as? Long ?: 0} đời"
+                        binding.treeSummary.tvMembers.text = "${data["members"] as? Long ?: 0} thành viên"
+                    }
+                } else {
+                    Log.e("HomeFragment", "Tree document does not exist")
+                    // Document doesn't exist, set default values
+                    binding.treeSummary.tvFamilyName.text = ""
+                    binding.treeSummary.tvAddress.text = ""
+                    binding.treeSummary.tvGenerations.text = "0 đời"
+                    binding.treeSummary.tvMembers.text = "0 thành viên"
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("HomeFragment", "Error getting tree data", e)
+            // Handle any errors that occur during the query
+            e.printStackTrace()
+            // Set default values in case of error
+            binding.treeSummary.tvFamilyName.text = ""
+            binding.treeSummary.tvAddress.text = ""
+            binding.treeSummary.tvGenerations.text = "0 đời"
+            binding.treeSummary.tvMembers.text = "0 thành viên"
+        }
     }
 
     override fun onDestroyView() {
