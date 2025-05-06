@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.dung.madfamilytree.R
 import com.dung.madfamilytree.databinding.FragmentHomeBinding
 import com.dung.madfamilytree.utility.Utility
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +46,7 @@ class HomeFragment : Fragment() {
         // Launch coroutine to call suspend function
         coroutineScope.launch {
             setUp()
+            navigateSetup()
         }
     }
 
@@ -96,6 +99,37 @@ class HomeFragment : Fragment() {
             binding.treeSummary.tvAddress.text = ""
             binding.treeSummary.tvGenerations.text = "0 đời"
             binding.treeSummary.tvMembers.text = "0 thành viên"
+        }
+    }
+
+    private suspend fun navigateSetup(){
+        binding.mainMenu.album.setOnClickListener {
+            // Find the bottom navigation view and set the selected item
+            activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_nav_view)?.selectedItemId = R.id.albumFragment
+        }
+
+        binding.mainMenu.phaky.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_phakyFragment)
+        }
+
+        binding.mainMenu.phaHe.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_familyTreeFragment)
+        }
+
+        binding.mainMenu.sukien.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_eventsFragment)
+        }
+
+        binding.mainMenu.chiase.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_shareFragment)
+        }
+
+        binding.mainMenu.timkiem.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
+
+        binding.mainMenu.thongke.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_statisticsFragment)
         }
     }
 
