@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -81,6 +82,7 @@ class CreateNewAlbumActivity : BaseActivity() {
                 valid = false
             }
             if (valid) {
+                binding.loadingView.visibility = View.VISIBLE
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.upLoadImages(this@CreateNewAlbumActivity)
                     Utility.db?.collection("Album")?.add(
@@ -88,6 +90,8 @@ class CreateNewAlbumActivity : BaseActivity() {
                             "name" to binding.albumName.text.toString(),
                             "place" to binding.albumPlace.text.toString(),
                             "story" to binding.albumStory.text.toString(),
+                            "owner" to Utility.db?.collection("Account")
+                                ?.document(Utility.accountId)
                         )
                     )?.addOnSuccessListener { albumRef ->
 //                    var count = 0
@@ -103,17 +107,24 @@ class CreateNewAlbumActivity : BaseActivity() {
                                 for (imageUrl in viewModel.imageUrlList) {
                                     count++
                                     Utility.db?.collection("Image")
-                                        ?.add(hashMapOf(
-                                            "url" to imageUrl,
-                                            "album" to albumRef,
-                                            "uploadTime" to FieldValue.serverTimestamp()
-                                        ))
-                                    ?.addOnSuccessListener { imageRef ->
-                                        if(count == viewModel.imageUrlList.size){
-                                            finish()
+                                        ?.add(
+                                            hashMapOf(
+                                                "url" to imageUrl,
+                                                "album" to albumRef,
+                                                "uploadTime" to FieldValue.serverTimestamp()
+                                            )
+                                        )
+                                        ?.addOnSuccessListener { imageRef ->
+                                            if (count == viewModel.imageUrlList.size) {
+                                                binding.loadingView.visibility = View.GONE
+                                                finish()
+                                            }
                                         }
-                                    }
 
+                                }
+                                if (viewModel.imageUrlList.size == 0) {
+                                    binding.loadingView.visibility = View.GONE
+                                    finish()
                                 }
                             }
 

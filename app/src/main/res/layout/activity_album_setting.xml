@@ -30,7 +30,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
+            android:id="@+id/share"
+            android:visibility="@{viewModel.owner ? View.VISIBLE : View.GONE}"
+            android:text="Cấp quyền" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
             android:id="@+id/delete_album_btn"
+            android:visibility="@{viewModel.owner ? View.VISIBLE : View.GONE}"
             android:text="Xóa album" />
 
     </LinearLayout>

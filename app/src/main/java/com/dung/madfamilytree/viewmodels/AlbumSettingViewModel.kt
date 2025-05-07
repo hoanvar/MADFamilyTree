@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 class AlbumSettingViewModel : ViewModel() {
     var albumId = ""
     var editable = false
+    var owner = false
     val finishDeleted = MutableLiveData<Boolean>()
     fun deleteAlbum(){
         viewModelScope.launch(Dispatchers.IO) {

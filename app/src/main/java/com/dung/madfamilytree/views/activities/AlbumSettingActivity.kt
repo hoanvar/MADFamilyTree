@@ -34,6 +34,7 @@ class AlbumSettingActivity : BaseActivity() {
         const val ALBUM_ID = "ALBUM_ID"
         const val EDITABLE = "EDITABLE"
         const val DELETED = "DELETED"
+        const val OWNER = "ONWER"
     }
 
     val updateAlbumRegistorForActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result ->
@@ -57,6 +58,7 @@ class AlbumSettingActivity : BaseActivity() {
         viewModel = ViewModelProvider(this).get(AlbumSettingViewModel::class.java)
         viewModel.albumId = intent.getStringExtra(ALBUM_ID)!!
         viewModel.editable = intent.getBooleanExtra(EDITABLE,false)
+        viewModel.owner = intent.getBooleanExtra(OWNER,false)
 
         binding = ActivityAlbumSettingBinding.inflate(layoutInflater)
 
