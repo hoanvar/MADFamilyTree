@@ -1,20 +1,20 @@
 package com.dung.madfamilytree.dtos
 
 data class ProfileDTO(
-    val matched_recordsId_matched_record: Int?,
-    val name: String?,
-    val another_name: String?,
-    val gender: String?,
-    val date_of_birth: String?,
-    val phone_number: String?,
-    val marital_status: String?,
-    val educational_level: String?,
-    val job: String?,
-    val province1: String?,
-    val district1: String?,
-    val commune1: String?,
-    val province2: String?,
-    val district2: String?,
-    val commune2: String?,
-    val died: Int?
+    val matched_recordsId_matched_record: Int? = null,
+    val name: String? = null,
+    val another_name: String? = null,
+    val gender: String? = null,
+    val date_of_birth: String? = null,
+    val phone_number: String? = null,
+    val marital_status: String? = null,
+    val educational_level: String? = null,
+    val job: String? = null,
+    val province1: String? = null,
+    val district1: String? = null,
+    val commune1: String? = null,
+    val province2: String? = null,
+    val district2: String? = null,
+    val commune2: String? = null,
+    val died: Int? = null
 )

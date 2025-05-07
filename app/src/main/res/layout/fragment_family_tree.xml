@@ -12,7 +12,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/prompt_regular"
         android:text="Phả hệ"
         android:textColor="@color/black"
         android:textSize="@dimen/default_text_size"

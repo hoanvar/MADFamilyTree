@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="FamilyTreeView">
-
-    </declare-styleable>
     <declare-styleable name="CustomImageButton">
         <attr name="custom_background_color" format="color"/>
     </declare-styleable>

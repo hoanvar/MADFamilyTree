@@ -28,9 +28,9 @@ class LoginActivity : BaseActivity() {
     }
 
     fun setUpEvent(){
-//        binding.registorLink.setOnClickListener{
-//            startActivity(Intent(this@LoginActivity,RegistorActivity::class.java))
-//        }
+        binding.registorLink.setOnClickListener{
+            startActivity(Intent(this@LoginActivity,RegistorActivity::class.java))
+        }
 
         binding.loginBtn.setOnClickListener {
             val username = binding.userName.text.toString()

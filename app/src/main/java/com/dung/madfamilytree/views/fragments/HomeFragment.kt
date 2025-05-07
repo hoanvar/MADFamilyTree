@@ -1,5 +1,6 @@
 package com.dung.madfamilytree.views.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,9 @@ import androidx.navigation.fragment.findNavController
 import com.dung.madfamilytree.R
 import com.dung.madfamilytree.databinding.FragmentHomeBinding
 import com.dung.madfamilytree.utility.Utility
+import com.dung.madfamilytree.views.activities.CreateNewTreeActivity
+import com.dung.madfamilytree.views.activities.HomeActivity
+import com.dung.madfamilytree.views.activities.HomeNotInTree
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,13 +57,15 @@ class HomeFragment : Fragment() {
     private suspend fun setUp() {
         val tree_id = Utility.getTreeId()
         Log.d("HomeFragment", "Tree ID from account: $tree_id")
-        
+        binding.textView7.text = Utility.accountName;
         if (tree_id == "false" || tree_id.isEmpty()) {
-            Log.e("HomeFragment", "Invalid tree ID")
-            binding.treeSummary.tvFamilyName.text = ""
-            binding.treeSummary.tvAddress.text = ""
-            binding.treeSummary.tvGenerations.text = "0 đời"
-            binding.treeSummary.tvMembers.text = "0 thành viên"
+            // Chỉ chuyển màn hình nếu đang ở HomeActivity
+            if (activity is HomeActivity) {
+                val intent = Intent(requireContext(), HomeNotInTree::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                activity?.finish()
+            }
             return
         }
 
