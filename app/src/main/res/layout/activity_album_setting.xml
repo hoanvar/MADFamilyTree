@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".views.activities.AlbumSettingActivity">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.dung.madfamilytree.viewmodels.AlbumSettingViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/album_setting_toolbar"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:id="@+id/update_album_btn"
+            android:visibility="@{viewModel.editable ? View.VISIBLE : View.GONE}"
+            android:text="Chỉnh sửa Album" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:id="@+id/share"
+            android:visibility="@{viewModel.owner ? View.VISIBLE : View.GONE}"
+            android:text="Cấp quyền" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:id="@+id/delete_album_btn"
+            android:visibility="@{viewModel.owner ? View.VISIBLE : View.GONE}"
+            android:text="Xóa album" />
+
+    </LinearLayout>
+</layout>

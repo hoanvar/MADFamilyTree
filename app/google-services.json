@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "516481683800",
+    "project_id": "madfamilytree",
+    "storage_bucket": "madfamilytree.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:516481683800:android:f5078b2026f87bdc2c952d",
+        "android_client_info": {
+          "package_name": "com.dung.madfamilytree"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8UYFw1r_kXQ0bVw64BtqyqQP3MCmABn8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

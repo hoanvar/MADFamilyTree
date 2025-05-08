@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_activity_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.dung.madfamilytree.views.fragments.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_albulmFragment"
+            app:destination="@id/albumFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_phakyFragment"
+            app:destination="@id/phakyFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_familyTreeFragment"
+            app:destination="@id/familyTreeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_eventsFragment"
+            app:destination="@id/eventsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_shareFragment"
+            app:destination="@id/shareFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_statisticsFragment"
+            app:destination="@id/statisticsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/albumFragment"
+        android:name="com.dung.madfamilytree.views.fragments.AlbumFragment"
+        android:label="fragment_album"
+        tools:layout="@layout/fragment_album" />
+
+    <fragment
+        android:id="@+id/phakyFragment"
+        android:name="com.dung.madfamilytree.views.fragments.PhakyFragment"
+        android:label="fragment_phaky"
+        tools:layout="@layout/fragment_phaky" />
+
+    <fragment
+        android:id="@+id/familyTreeFragment"
+        android:name="com.dung.madfamilytree.views.fragments.FamilyTreeFragment"
+        android:label="fragment_family_tree"
+        tools:layout="@layout/fragment_family_tree" />
+
+    <fragment
+        android:id="@+id/eventsFragment"
+        android:name="com.dung.madfamilytree.views.fragments.EventsFragment"
+        android:label="fragment_events"
+        tools:layout="@layout/fragment_events" />
+
+    <fragment
+        android:id="@+id/shareFragment"
+        android:name="com.dung.madfamilytree.views.fragments.ShareFragment"
+        android:label="fragment_share"
+        tools:layout="@layout/fragment_share" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.dung.madfamilytree.views.fragments.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.dung.madfamilytree.views.fragments.StatisticsFragment"
+        android:label="fragment_statistics"
+        tools:layout="@layout/fragment_statistics" />
+
+    <fragment
+        android:id="@+id/tree"
+        android:name="com.dung.madfamilytree.views.fragments.TreeFragment"
+        android:label="fragment_tree"
+        tools:layout="@layout/fragment_tree">
+        <action
+            android:id="@+id/actionTreeFragmentToProfileCardFragment"
+            app:destination="@id/profileCardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileCardFragment"
+        android:name="com.dung.madfamilytree.views.fragments.ProfileCardFragment"
+        android:label="fragment_profile_card"
+        tools:layout="@layout/profile_card">
+        <argument
+            android:name="profileId"
+            app:argType="string" />
+        <argument
+            android:name="profileName"
+            app:argType="string" />
+        <argument
+            android:name="profileAnotherName"
+            app:argType="string" />
+        <argument
+            android:name="profileGender"
+            app:argType="string" />
+        <argument
+            android:name="profileDateOfBirth"
+            app:argType="string" />
+        <argument
+            android:name="profilePhoneNumber"
+            app:argType="string" />
+        <argument
+            android:name="profileMaritalStatus"
+            app:argType="string" />
+        <argument
+            android:name="profileEducationalLevel"
+            app:argType="string" />
+        <argument
+            android:name="profileJob"
+            app:argType="string" />
+        <argument
+            android:name="profileProvince1"
+            app:argType="string" />
+        <argument
+            android:name="profileDistrict1"
+            app:argType="string" />
+        <argument
+            android:name="profileCommune1"
+            app:argType="string" />
+        <argument
+            android:name="profileProvince2"
+            app:argType="string" />
+        <argument
+            android:name="profileDistrict2"
+            app:argType="string" />
+        <argument
+            android:name="profileCommune2"
+            app:argType="string" />
+        <argument
+            android:name="profileDied"
+            app:argType="integer" />
+    </fragment>
+
+</navigation>

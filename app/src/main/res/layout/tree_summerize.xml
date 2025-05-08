@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFF4E5"
+    android:padding="16dp"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:layout_gravity="center"
+    android:clipToPadding="false"
+    android:layout_marginBottom="12dp"
+    android:backgroundTint="#FFF4E5"
+    android:backgroundTintMode="src_in"
+    android:shape="rectangle"
+    android:gravity="center_horizontal"
+    android:id="@+id/tree_description">
+
+    <!-- Họ -->
+    <TextView
+        android:id="@+id/tv_family_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đỗ Gia"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Địa chỉ -->
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Địa chỉ: thôn đông, xã An Thanh,\nhuyện Quỳnh Phụ, tỉnh Thái Bình"
+        android:textSize="14sp"
+        android:textColor="#000000"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Hàng biểu tượng -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- Icon số đời -->
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/app_icon"
+            android:contentDescription="đời"
+            />
+
+        <TextView
+            android:id="@+id/tv_generations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4 đời"
+            android:textSize="14sp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Icon số thành viên -->
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/app_icon"
+            android:contentDescription="thành viên" />
+
+        <TextView
+            android:id="@+id/tv_members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15 thành viên"
+            android:textSize="14sp"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+
+</LinearLayout>

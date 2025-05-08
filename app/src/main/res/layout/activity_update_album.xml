@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.dung.madfamilytree.viewmodels.UpdateAlbumViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:paddingBottom="25dp"
+        tools:context=".views.activities.UpdateAlbumActivity">
+
+        <Button
+            android:id="@+id/create_album_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/poppins_bold"
+            android:paddingTop="5dp"
+            android:text="Lưu thông tin"
+            android:textSize="@dimen/small_text_size"
+            android:onClick="@{()->viewModel.updateAlbum()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@android:color/transparent"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="13dp"
+            app:layout_constraintBottom_toTopOf="@+id/create_album_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintVertical_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="13dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Tên Album"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/album_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_input_shape"
+                    android:backgroundTint="@color/secondary_color"
+                    android:ems="10"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:hint="Tên album"
+                    android:inputType="text"
+                    android:paddingStart="33dp"
+                    android:text="@={viewModel.albumName}"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/text_hint_color"
+                    android:textSize="@dimen/small_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="13dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Địa điểm"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/album_place"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_input_shape"
+                    android:backgroundTint="@color/secondary_color"
+                    android:ems="10"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:hint="Địa điểm"
+                    android:inputType="text"
+                    android:paddingStart="33dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:textColor="@color/black"
+                    android:text="@={viewModel.albumPlace}"
+                    android:textColorHint="@color/text_hint_color"
+                    android:textSize="@dimen/small_text_size" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="13dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Câu chuyện"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/small_text_size" />
+
+                <EditText
+                    android:id="@+id/album_story"
+                    style="@style/editTextStyle"
+                    android:text="@={viewModel.albumStory}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
