@@ -32,12 +32,6 @@
             android:name=".views.activities.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".views.activities.HomeNotInTree"
-            android:exported="false" />
-        <activity
-            android:name=".views.activities.CreateNewTreeActivity"
-            android:exported="false" />
-        <activity
             android:name=".views.activities.RegistorActivity"
             android:exported="false" />
         <activity
