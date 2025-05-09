@@ -58,16 +58,6 @@ class HomeFragment : Fragment() {
         val tree_id = Utility.getTreeId()
         Log.d("HomeFragment", "Tree ID from account: $tree_id")
         binding.textView7.text = Utility.accountName;
-        if (tree_id == "false" || tree_id.isEmpty()) {
-            // Chỉ chuyển màn hình nếu đang ở HomeActivity
-            if (activity is HomeActivity) {
-                val intent = Intent(requireContext(), HomeNotInTree::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                activity?.finish()
-            }
-            return
-        }
 
         try {
             val treeDocument = Utility.db?.collection("Tree")
@@ -89,11 +79,8 @@ class HomeFragment : Fragment() {
                     }
                 } else {
                     Log.e("HomeFragment", "Tree document does not exist")
-                    // Document doesn't exist, set default values
-                    binding.treeSummary.tvFamilyName.text = ""
-                    binding.treeSummary.tvAddress.text = ""
-                    binding.treeSummary.tvGenerations.text = "0 đời"
-                    binding.treeSummary.tvMembers.text = "0 thành viên"
+                    // If tree document doesn't exist, navigate to HomeNotInTree
+                    (activity as? HomeActivity)?.navToHomeNotInTree()
                 }
             }
         } catch (e: Exception) {
@@ -114,9 +101,9 @@ class HomeFragment : Fragment() {
             activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_nav_view)?.selectedItemId = R.id.albumFragment
         }
 
-        binding.mainMenu.phaky.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_phakyFragment)
-        }
+//        binding.mainMenu.phaky.setOnClickListener {
+//            findNavController().navigate(R.id.action_homeFragment_to_phakyFragment)
+//        }
 
         binding.mainMenu.phaHe.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_familyTreeFragment)

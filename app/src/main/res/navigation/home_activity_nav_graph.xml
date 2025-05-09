@@ -13,9 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_albulmFragment"
             app:destination="@id/albumFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_phakyFragment"
-            app:destination="@id/phakyFragment" />
+<!--        <action-->
+<!--            android:id="@+id/action_homeFragment_to_phakyFragment"-->
+<!--            app:destination="@id/phakyFragment" />-->
         <action
             android:id="@+id/action_homeFragment_to_familyTreeFragment"
             app:destination="@id/familyTreeFragment" />
@@ -39,11 +39,11 @@
         android:label="fragment_album"
         tools:layout="@layout/fragment_album" />
 
-    <fragment
-        android:id="@+id/phakyFragment"
-        android:name="com.dung.madfamilytree.views.fragments.PhakyFragment"
-        android:label="fragment_phaky"
-        tools:layout="@layout/fragment_phaky" />
+<!--    <fragment-->
+<!--        android:id="@+id/phakyFragment"-->
+<!--        android:name="com.dung.madfamilytree.views.fragments.PhakyFragment"-->
+<!--        android:label="fragment_phaky"-->
+<!--        tools:layout="@layout/fragment_phaky" />-->
 
     <fragment
         android:id="@+id/familyTreeFragment"

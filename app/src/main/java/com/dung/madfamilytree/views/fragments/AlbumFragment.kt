@@ -63,7 +63,7 @@ class AlbumFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.getAlbum()
+        viewModel.getAlbum(Utility.accountId)
     }
 
 }

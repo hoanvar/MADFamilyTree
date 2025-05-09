@@ -30,4 +30,8 @@
         <item>Ly hôn</item>
         <item>Góa</item>
     </string-array>
+
+    <string name="select_province">Chọn Tỉnh/Thành phố</string>
+    <string name="select_district">Chọn Quận/Huyện</string>
+    <string name="select_ward">Chọn Phường/Xã</string>
 </resources>

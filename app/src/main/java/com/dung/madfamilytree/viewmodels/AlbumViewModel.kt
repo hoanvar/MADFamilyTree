@@ -18,7 +18,7 @@ class AlbumViewModel(private val db: FirebaseFirestore) : ViewModel() {
     val albumList: LiveData<out List<AlbumDTO>>
         get() = _albumList
 
-    fun getAlbum(accountId: String = "qeCGzYEwV5w7VYpWXtdn") {
+    fun getAlbum(accountId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _albumList.postValue(Utility.getAlbum().toMutableList())
 

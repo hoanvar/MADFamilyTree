@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp"
     tools:context=".views.fragments.HomeFragment">
 
 <!--    <TextView-->

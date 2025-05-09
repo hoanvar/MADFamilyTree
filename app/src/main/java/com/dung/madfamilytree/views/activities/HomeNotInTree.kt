@@ -2,10 +2,7 @@ package com.dung.madfamilytree.views.activities
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.dung.madfamilytree.R
-import com.dung.madfamilytree.databinding.ActivityHomeBinding
 import com.dung.madfamilytree.databinding.ActivityHomeNotInTreeBinding
 
 class HomeNotInTree : BaseActivity() {
@@ -14,9 +11,9 @@ class HomeNotInTree : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeNotInTreeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpBottonNavBar()
         setUpEvent()
     }
+
     fun setUpEvent(){
         binding.fab.setOnClickListener{
             val intent = Intent(this, CreateNewTreeActivity::class.java)
@@ -24,9 +21,5 @@ class HomeNotInTree : BaseActivity() {
             startActivity(intent)
             finish()
         }
-    }
-    fun setUpBottonNavBar(){
-        binding.bottomNavBarCustom.bottomNavView.setupWithNavController((supportFragmentManager.findFragmentById(
-            R.id.nav_host_fragment) as NavHostFragment).navController)
     }
 }

@@ -36,7 +36,8 @@
             android:exported="false" />
         <activity
             android:name=".views.activities.CreateNewTreeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".views.activities.RegistorActivity"
             android:exported="false" />

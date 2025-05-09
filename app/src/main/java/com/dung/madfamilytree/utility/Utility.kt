@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
+import android.util.Log
 
 object Utility {
     var db: FirebaseFirestore? = null
@@ -121,26 +122,26 @@ object Utility {
 
     suspend fun getTreeId(): String {
         val account = getAccountById()
-        if(account != null){
+        if(account != null && account.tree_id.isNotEmpty()){
             treeId = account.tree_id
-            db?.collection("Tree")
-                ?.document(treeId)
-                ?.get()
-                ?.addOnSuccessListener { document ->
-                    if (document != null && document.exists()) {
-                        val tree = document.toObject(TreeDTO::class.java)
-                        tree?.let {
-                            rootId = tree.id_root.toString()
-                        }
+            try {
+                val document = db?.collection("Tree")
+                    ?.document(treeId)
+                    ?.get()
+                    ?.await()
+                
+                if (document != null && document.exists()) {
+                    val tree = document.toObject(TreeDTO::class.java)
+                    tree?.let {
+                        rootId = tree.id_root.toString()
                     }
+                    return treeId
                 }
-                ?.addOnFailureListener {
-
-                }
-            return account.tree_id;
-        }else{
-            return "false";
+            } catch (e: Exception) {
+                Log.e("Utility", "Error getting tree document", e)
+            }
         }
+        return "false"
     }
 
 
