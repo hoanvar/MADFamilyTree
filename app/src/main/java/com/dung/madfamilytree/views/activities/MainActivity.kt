@@ -10,8 +10,6 @@ import com.dung.madfamilytree.utility.Utility
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 
-
-
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
