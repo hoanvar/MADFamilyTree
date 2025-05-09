@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FFF"
+    android:divider="@android:color/darker_gray"
+    android:showDividers="middle">
+
+    <!-- Tên gia phả -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nhập tên gia phả"
+        android:textSize="12sp"
+        android:paddingBottom="4dp" />
+
+    <EditText
+        android:id="@+id/edt_family_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Đỗ Gia"/>
+<!--        android:background="@drawable/edit_text_bg"-->
+<!--         -->
+
+
+    <!-- Địa chỉ -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Địa chỉ"
+        android:textSize="12sp"
+        android:paddingTop="12dp"
+        android:paddingBottom="4dp" />
+<!--    <Spinner-->
+<!--        android:id="@+id/spinner_province"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:prompt="Chọn Tỉnh/Thành phố" />-->
+<!--    <Spinner-->
+<!--        android:id="@+id/spinner_district"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:prompt="Chọn Quận/Huyện" />-->
+<!--    <Spinner-->
+<!--        android:id="@+id/spinner_ward"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:prompt="Chọn Phường/Xã" />-->
+    <EditText
+        android:id="@+id/et_thanhpho"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Thanhpho" />
+    <EditText
+        android:id="@+id/et_huyen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="huyen" />
+    <EditText
+        android:id="@+id/et_xa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="xa" />
+    <EditText
+        android:id="@+id/edt_address_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Địa chỉ chi tiết" />
+
+    <!-- Giới thiệu -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Giới thiệu"
+        android:textSize="12sp"
+        android:paddingTop="12dp"
+        android:paddingBottom="4dp" />
+    <EditText
+        android:id="@+id/edt_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Quê hương 5 tấn" />
+
+    <!-- Nút Lưu -->
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lưu"
+        android:layout_gravity="end"
+        android:drawableLeft="@android:drawable/ic_menu_save"
+        android:backgroundTint="#FF6B6B"
+        android:textColor="#FFF"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout> 
