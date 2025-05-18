@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/male_node_container"
+        android:layout_width="76dp"
+        android:layout_height="99dp"
+        android:background="@drawable/family_node_background"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/male_node_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="23dp"
+            android:layout_marginTop="9dp"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/download_5" />
+
+        <TextView
+            android:id="@+id/male_node_name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="17dp"
+            android:layout_marginTop="11dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Đỗ Văn A"
+            android:textColor="@color/black"
+            android:textSize="6sp" />
+
+        <TextView
+            android:id="@+id/male_node_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="12/12/1980 - _/_"
+            android:textColor="@color/black"
+            android:textSize="5sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/female_node_container"
+        android:layout_width="76dp"
+        android:layout_height="99dp"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/family_node_background_female"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/female_node_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="23dp"
+            android:layout_marginTop="9dp"
+            android:contentDescription="@string/image_description"
+            android:src="@drawable/download_5" />
+
+        <TextView
+            android:id="@+id/female_node_name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="17dp"
+            android:layout_marginTop="11dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Nguyễn Thị B"
+            android:textColor="@color/black"
+            android:textSize="6sp" />
+
+        <TextView
+            android:id="@+id/female_node_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="12/12/1980 - _/_"
+            android:textColor="@color/black"
+            android:textSize="5sp" />
+    </LinearLayout>
+</LinearLayout>

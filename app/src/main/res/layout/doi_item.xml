@@ -4,12 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:backgroundTint="@color/family_node_background_blue"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    android:layout_margin="5dp">
     <TextView
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:id="@+id/tv_doi"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:text="Doi thu 1"/>
+        android:text="Doi thu 1"
+        android:fontFamily="@font/roboto_bold"
+        />
 </androidx.cardview.widget.CardView>

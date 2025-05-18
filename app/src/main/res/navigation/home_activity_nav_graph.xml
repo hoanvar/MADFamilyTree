@@ -49,7 +49,11 @@
         android:id="@+id/familyTreeFragment"
         android:name="com.dung.madfamilytree.views.fragments.FamilyTreeFragment"
         android:label="fragment_family_tree"
-        tools:layout="@layout/fragment_family_tree" />
+        tools:layout="@layout/fragment_family_tree">
+        <action
+            android:id="@+id/action_familyTreeFragment_to_tree"
+            app:destination="@id/tree" />
+    </fragment>
 
     <fragment
         android:id="@+id/eventsFragment"
@@ -83,6 +87,9 @@
         <action
             android:id="@+id/actionTreeFragmentToProfileCardFragment"
             app:destination="@id/profileCardFragment" />
+        <action
+            android:id="@+id/action_tree_to_familyTreeFragment"
+            app:destination="@id/familyTreeFragment" />
     </fragment>
 
     <fragment

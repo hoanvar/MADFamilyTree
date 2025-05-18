@@ -18,6 +18,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import com.dung.madfamilytree.utility.TreeUtility
+import com.dung.madfamilytree.dtos.TreeDTO
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,15 +69,54 @@ class HomeFragment : Fragment() {
 
             if (treeDocument != null) {
                 if (treeDocument.exists()) {
-                    val treeData = treeDocument.data
+                    val treeData = treeDocument.toObject(TreeDTO::class.java)
                     Log.d("HomeFragment", "Tree data: $treeData")
 
                     // Update UI with tree data
                     treeData?.let { data ->
-                        binding.treeSummary.tvFamilyName.text = data["tree_name"] as? String ?: ""
-                        binding.treeSummary.tvAddress.text = "Địa chỉ: Xã " + data["commune"] + " Huyện " + data["commune"] + " Tỉnh " + data["province"]
-                        binding.treeSummary.tvGenerations.text = "${data["generations"] as? Long ?: 0} đời"
-                        binding.treeSummary.tvMembers.text = "${data["members"] as? Long ?: 0} thành viên"
+                        binding.treeSummary.apply {
+                            tvFamilyName.text = data.tree_name ?: ""
+                            
+                            // Combine address information into one line
+                            val addressBuilder = StringBuilder()
+                            if (!data.exact_address.isNullOrEmpty()) {
+                                addressBuilder.append(data.exact_address)
+                            }
+                            if (!data.commune.isNullOrEmpty()) {
+                                if (addressBuilder.isNotEmpty()) addressBuilder.append(", ")
+                                addressBuilder.append(data.commune)
+                            }
+                            if (!data.district.isNullOrEmpty()) {
+                                if (addressBuilder.isNotEmpty()) addressBuilder.append(", ")
+                                addressBuilder.append(data.district)
+                            }
+                            if (!data.province.isNullOrEmpty()) {
+                                if (addressBuilder.isNotEmpty()) addressBuilder.append(", ")
+                                addressBuilder.append(data.province)
+                            }
+                            
+                            // Set the combined address
+                            tvExactAddress.text = addressBuilder.toString()
+                            // Hide other address TextViews since we're combining them
+                            tvCommune.visibility = View.GONE
+                            tvDistrict.visibility = View.GONE
+                            tvProvince.visibility = View.GONE
+                            
+                            tvIntroduction.text = data.introduce ?: ""
+                        }
+                        
+                        // Get tree structure and calculate counts
+                        val (nodes, profiles) = TreeUtility.fetchFamilyTree(tree_id)
+                        val rootId = Utility.rootId
+                        val treeRoot = nodes?.let { TreeUtility.buildTree(rootId, it, profiles) }
+                        
+                        // Calculate generations and members
+                        val profilesByDepth = TreeUtility.groupProfilesByDepth(treeRoot)
+                        val generationCount = profilesByDepth.keys.size
+                        val memberCount = profilesByDepth.values.flatten().size
+                        
+                        binding.treeSummary.tvGenerations.text = "$generationCount đời"
+                        binding.treeSummary.tvMembers.text = "$memberCount thành viên"
                     }
                 } else {
                     Log.e("HomeFragment", "Tree document does not exist")
@@ -88,10 +129,16 @@ class HomeFragment : Fragment() {
             // Handle any errors that occur during the query
             e.printStackTrace()
             // Set default values in case of error
-            binding.treeSummary.tvFamilyName.text = ""
-            binding.treeSummary.tvAddress.text = ""
-            binding.treeSummary.tvGenerations.text = "0 đời"
-            binding.treeSummary.tvMembers.text = "0 thành viên"
+            binding.treeSummary.apply {
+                tvFamilyName.text = ""
+                tvExactAddress.text = ""
+                tvCommune.text = ""
+                tvDistrict.text = ""
+                tvProvince.text = ""
+                tvIntroduction.text = ""
+                tvGenerations.text = "0 đời"
+                tvMembers.text = "0 thành viên"
+            }
         }
     }
 

@@ -8,20 +8,40 @@
     tools:context=".views.fragments.TreeFragment"
     >
 
-    <TextView
-        android:id="@+id/treeTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Gia Phả"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:fontFamily="@font/poppins_bold"
-        android:textStyle="bold"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/back_icon" />
+
+        <Button
+            android:id="@+id/btn_family_tree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Cây gia phả"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_find"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tìm kiếm"
+            android:textSize="20sp" />
+    </LinearLayout>
     <com.dung.madfamilytree.views.custom.FamilyTreeView
         android:id="@+id/familyTreeView"
         android:layout_width="match_parent"
@@ -29,19 +49,11 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/treeTitle"
-        app:layout_constraintHeight_percent="0.9" />
+        app:layout_constraintTop_toBottomOf="@id/linearLayout3"
+        app:layout_constraintHeight_percent="0.9" >
 
-    <TextView
-        android:id="@+id/tv_family_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tree View Placeholder"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/treeTitle" />
+
+    </com.dung.madfamilytree.views.custom.FamilyTreeView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout> 

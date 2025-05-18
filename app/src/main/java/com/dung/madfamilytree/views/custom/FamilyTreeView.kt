@@ -4,23 +4,26 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.ScaleGestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.ui.layout.ScaleFactor
 import androidx.core.content.ContextCompat
 import com.dung.madfamilytree.R
-import com.dung.madfamilytree.views.fragments.TreeFragment
+import com.dung.madfamilytree.dtos.TreeNode
+import com.dung.madfamilytree.utility.TreeUtility
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.math.min
-import kotlin.math.max
 
 class FamilyTreeView @JvmOverloads constructor(
     context: Context,
@@ -29,20 +32,18 @@ class FamilyTreeView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val TAG = "FamilyTreeView"
-    private var onNodeClickListener: ((TreeFragment.TreeNode) -> Unit)? = null
-    private var onAddPartnerClickListener: ((TreeFragment.TreeNode) -> Unit)? = null
-    private var onAddChildClickListener: ((TreeFragment.TreeNode) -> Unit)? = null
+    private var onNodeClickListener: ((TreeNode) -> Unit)? = null
+    private var onAddPartnerClickListener: ((TreeNode) -> Unit)? = null
+    private var onAddChildClickListener: ((TreeNode) -> Unit)? = null
 
-    // Zoom related properties
-    private var scaleFactor = 1.0f
-    private val minScale = 0.5f
-    private val maxScale = 2.0f
+    // Panning related properties
     private var focusX = 0f
     private var focusY = 0f
     private var lastTouchX = 0f
     private var lastTouchY = 0f
     private var activePointerId = INVALID_POINTER_ID
     private var mode = Mode.NONE
+    private var scaleFactor = 1.0f
 
     private enum class Mode {
         NONE, DRAG, ZOOM
@@ -50,354 +51,448 @@ class FamilyTreeView @JvmOverloads constructor(
 
     companion object {
         private const val INVALID_POINTER_ID = -1
+        private const val NODE_WIDTH = 680  // Chiều rộng của một pair node
+        private const val NODE_HEIGHT = 370 // Chiều cao của một pair node
+        private const val LEVEL_SPACING = 600 // Khoảng cách giữa các level
+        private const val NODE_SPACING = 300  // Khoảng cách tối thiểu giữa các node
+        private const val MIN_SPACING = 300  // Khoảng cách tối thiểu giữa các node con
+        private const val PAIR_SPACING = 40  // Khoảng cách giữa node chính và partner
+        private const val LINE_MOVE_FACTOR = 0.0025f  // Hệ số điều chỉnh tỷ lệ di chuyển giữa đường thẳng và pair node
+        private const val ZOOM_STEP = 0.1f  // Bước nhảy khi zoom
+        private const val MIN_ZOOM = 0.5f   // Mức zoom tối thiểu
+        private const val MAX_ZOOM = 2.0f   // Mức zoom tối đa
     }
 
-    // Fixed dimensions for nodes and spacing
-    private val nodeWidth = 76
-    private val nodeHeight = 99
-    private val nodeSpacing = 700
-    private val levelSpacing = 600
-    private val pairSpacing = 200 // Spacing between paired profiles
-    private val addChildButtonSpacing = 325 // Spacing between node and add child button
-
+    // Drawing related properties
     private val paint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.black)
         strokeWidth = 2f
         style = Paint.Style.STROKE
+        isAntiAlias = true
+        textSize = 40f
     }
-
     private val path = Path()
-    private var rootNode: TreeFragment.TreeNode? = null
+    private val nodeRect = Rect()
+
+    private var rootNode: TreeNode? = null
     private val nodeViews = mutableMapOf<String, View>()
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-    private val scaleDetector = ScaleGestureDetector(context, ScaleListener())
+    private lateinit var zoomContainer: LinearLayout
+    private lateinit var zoomInButton: ImageButton
+    private lateinit var zoomOutButton: ImageButton
 
     init {
-        // Set the background to be transparent
         setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
+        setupZoomButtons()
     }
 
-    fun setTree(root: TreeFragment.TreeNode) {
+    private fun setupZoomButtons() {
+        // Tạo container cho các nút zoom
+        zoomContainer = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
+            elevation = 8f
+            alpha = 0.9f
+            // Đặt ID cho container để có thể tìm lại sau này
+            id = View.generateViewId()
+        }
+
+        // Tạo nút zoom in
+        zoomInButton = ImageButton(context).apply {
+            setImageResource(android.R.drawable.arrow_up_float)
+            setBackgroundResource(android.R.color.transparent)
+            setOnClickListener {
+                zoomIn()
+            }
+        }
+
+        // Tạo nút zoom out
+        zoomOutButton = ImageButton(context).apply {
+            setImageResource(android.R.drawable.arrow_down_float)
+            setBackgroundResource(android.R.color.transparent)
+            setOnClickListener {
+                zoomOut()
+            }
+        }
+
+        // Thêm các nút vào container
+        zoomContainer.addView(zoomInButton)
+        zoomContainer.addView(zoomOutButton)
+
+        // Thêm container vào view
+        addView(zoomContainer)
+    }
+
+    private fun zoomIn() {
+        if (scaleFactor < MAX_ZOOM) {
+            scaleFactor += ZOOM_STEP
+            requestLayout()
+            invalidate()
+        }
+    }
+
+    private fun zoomOut() {
+        if (scaleFactor > MIN_ZOOM) {
+            scaleFactor -= ZOOM_STEP
+            requestLayout()
+            invalidate()
+        }
+    }
+
+    fun setTree(root: TreeNode) {
         Log.d(TAG, "Setting tree with root: ${root.profile?.name}")
         rootNode = root
-        // Clear existing views
+        refreshTree()
+    }
+
+    private fun refreshTree() {
+        // Lưu lại container zoom
+        val zoomContainer = findViewById<LinearLayout>(zoomContainer.id)
         removeAllViews()
         nodeViews.clear()
-        // Create all node views first
-        createAllNodeViews(root)
+        createAllNodeViews(rootNode!!)
+        // Thêm lại container zoom
+        addView(zoomContainer)
         requestLayout()
         invalidate()
     }
 
-    private fun createAllNodeViews(node: TreeFragment.TreeNode) {
-        // Create view for current node
-        val nodeView = createNodeView(node)
-        nodeViews[node.profileId] = nodeView
+    private fun createNodeView(node: TreeNode): View {
+        // Tạo view cho một pair node
+        val pairView = LayoutInflater.from(context).inflate(R.layout.family_tree_node_pair, this, false)
         
-        // Create view for partner if exists
-        node.partner?.let { partner ->
-            val partnerView = createNodeView(partner)
-            nodeViews[partner.profileId] = partnerView
-        } ?: run {
-            // Add partner button if no partner exists
-            val addPartnerButton = LayoutInflater.from(context).inflate(R.layout.add_partner_button, this, false) as Button
+        // Thiết lập thông tin cho node chính
+        val maleNodeContainer = pairView.findViewById<LinearLayout>(R.id.male_node_container)
+        maleNodeContainer.setBackgroundResource(
+            if (node.profile?.gender == "Nam") R.drawable.family_node_background
+            else R.drawable.family_node_background_female
+        )
+        pairView.findViewById<TextView>(R.id.male_node_name).text = node.profile?.name ?: "Unknown"
+        pairView.findViewById<TextView>(R.id.male_node_dates).text = node.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_"
+        
+        // Thêm click listener cho node chính
+        maleNodeContainer.setOnClickListener {
+            onNodeClickListener?.invoke(node)
+        }
+        
+        // Thiết lập thông tin cho partner
+        if (node.partner != null) {
+            val femaleNodeContainer = pairView.findViewById<LinearLayout>(R.id.female_node_container)
+            femaleNodeContainer.setBackgroundResource(
+                if (node.partner.profile?.gender == "Nam") R.drawable.family_node_background
+                else R.drawable.family_node_background_female
+            )
+            pairView.findViewById<TextView>(R.id.female_node_name).text = node.partner.profile?.name ?: "Unknown"
+            pairView.findViewById<TextView>(R.id.female_node_dates).text = node.partner.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_"
+            
+            // Thêm click listener cho partner node
+            femaleNodeContainer.setOnClickListener {
+                onNodeClickListener?.invoke(node.partner)
+            }
+        } else {
+            // Nếu chưa có partner, hiển thị nút thêm partner ở giữa
+            val femaleNodeContainer = pairView.findViewById<LinearLayout>(R.id.female_node_container)
+            femaleNodeContainer.removeAllViews()
+            femaleNodeContainer.setBackgroundResource(android.R.color.transparent)
+            
+            val addPartnerButton = LayoutInflater.from(context).inflate(R.layout.add_partner_button, this, false) as ImageButton
             addPartnerButton.setOnClickListener {
                 onAddPartnerClickListener?.invoke(node)
+                // Refresh tree sau khi thêm partner
+                refreshTree()
             }
-            nodeViews["add_partner_${node.profileId}"] = addPartnerButton
-            addView(addPartnerButton)
+            
+            // Tạo layout params để căn giữa button
+            val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = android.view.Gravity.CENTER
+                topMargin = 60 // Thêm padding top
+            }
+            
+            addPartnerButton.layoutParams = layoutParams
+            // Đặt kích thước nhỏ hơn cho button
+            addPartnerButton.scaleX = 0.5f
+            addPartnerButton.scaleY = 0.5f
+            femaleNodeContainer.addView(addPartnerButton)
         }
 
-        // Add child button
-        val addChildButton = LayoutInflater.from(context).inflate(R.layout.add_child_button, this, false) as Button
+        // Thêm nút thêm con
+        val addChildButton = LayoutInflater.from(context).inflate(R.layout.add_child_button, this, false) as ImageButton
         addChildButton.setOnClickListener {
             onAddChildClickListener?.invoke(node)
+            // Refresh tree sau khi thêm child
+            refreshTree()
         }
-        nodeViews["add_child_${node.profileId}"] = addChildButton
-        addView(addChildButton)
         
-        // Create views for children
+        // Tạo layout params để điều chỉnh vị trí button
+        val childButtonLayoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            leftMargin = 80  // X + 50
+            topMargin = -63  // Y - 30
+        }
+        
+        addChildButton.layoutParams = childButtonLayoutParams
+        // Thu nhỏ button
+        addChildButton.scaleX = 0.3f
+        addChildButton.scaleY = 0.3f
+        
+        pairView.findViewById<LinearLayout>(R.id.add_child_container).addView(addChildButton)
+
+        return pairView
+    }
+
+    private fun createAllNodeViews(node: TreeNode) {
+        val nodeView = createNodeView(node)
+        nodeViews[node.profileId] = nodeView
+        addView(nodeView)
+        
         node.children.forEach { child ->
             createAllNodeViews(child)
         }
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        
-        // Calculate total height needed for the tree
-        val treeHeight = calculateTreeHeight(rootNode) * levelSpacing
-        val totalHeight = treeHeight + nodeHeight + addChildButtonSpacing // Add extra space for the last level and add child buttons
-        
-        // Use the maximum of measured height and calculated height
-        val finalHeight = maxOf(measuredHeight, totalHeight)
-        
-        Log.d(TAG, "onMeasure: width=$measuredWidth, calculatedHeight=$totalHeight, finalHeight=$finalHeight")
-        setMeasuredDimension(measuredWidth, finalHeight)
-    }
-
-    private fun calculateTreeHeight(node: TreeFragment.TreeNode?): Int {
-        if (node == null) return 0
-        val childrenHeight = node.children.maxOfOrNull { calculateTreeHeight(it) } ?: 0
-        return 1 + childrenHeight
-    }
-
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        Log.d(TAG, "onLayout: left=$left, top=$top, right=$right, bottom=$bottom")
+        
+        // Đặt vị trí cho container zoom ở góc dưới bên phải
+        val margin = 16
+        val buttonSize = 100
+        val containerWidth = buttonSize
+        val containerHeight = buttonSize * 2 + margin
+        
+        // Tìm lại container zoom
+        val zoomContainer = findViewById<LinearLayout>(zoomContainer.id)
+        zoomContainer?.let {
+            it.layout(
+                width - containerWidth - margin,
+                height - containerHeight - margin,
+                width - margin,
+                height - margin
+            )
+            
+            // Đặt kích thước cho các nút
+            it.getChildAt(0)?.layout(0, 0, buttonSize, buttonSize)
+            it.getChildAt(1)?.layout(0, buttonSize + margin, buttonSize, buttonSize * 2 + margin)
+        }
+        
         layoutNodes()
     }
 
     private fun layoutNodes() {
         val root = rootNode ?: return
         val width = width.toFloat()
-        Log.d(TAG, "layoutNodes: width=$width")
         
-        // Calculate the total width needed for the tree
-        val totalWidth = calculateTreeWidth(root)
-        Log.d(TAG, "Total tree width: $totalWidth")
+        // Tính toán số lượng node và node con ở mỗi level
+        val nodesByLevel = mutableMapOf<Int, MutableList<TreeNode>>()
+        val childrenCountByLevel = mutableMapOf<Int, Int>()
+        countNodesAndChildrenByLevel(root, 0, nodesByLevel, childrenCountByLevel)
         
-        // Center the root node
-        val startX = (width - totalWidth) / 2
-        layoutNode(root, 0, startX + totalWidth / 2, totalWidth)
+        // Tính toán khoảng cách cho mỗi level
+        val levelSpacings = calculateLevelSpacings(nodesByLevel, childrenCountByLevel, width)
+        
+        // Bố trí các node
+        layoutNodeWithSpacing(root, 0, width / 2, width, levelSpacings)
     }
 
-    private fun calculateTreeWidth(node: TreeFragment.TreeNode): Float {
-        // Calculate width for current node and its partner
-        var width = nodeWidth.toFloat()
-        if (node.partner != null) {
-            width += nodeSpacing + nodeWidth
-        } else {
-            // Add space for the add partner button
-            width += nodeSpacing + 40 // 40 is the width of the add partner button
-        }
+    private fun countNodesAndChildrenByLevel(
+        node: TreeNode, 
+        level: Int, 
+        nodesByLevel: MutableMap<Int, MutableList<TreeNode>>,
+        childrenCountByLevel: MutableMap<Int, Int>
+    ) {
+        // Thêm node vào level hiện tại
+        nodesByLevel.getOrPut(level) { mutableListOf() }.add(node)
         
-        // Calculate width for children
-        if (node.children.isNotEmpty()) {
-            val childrenWidth = node.children.sumOf { calculateTreeWidth(it).toDouble() }.toFloat()
-            width = maxOf(width, childrenWidth)
-        }
+        // Cập nhật số lượng node con cho level hiện tại
+        val currentChildrenCount = childrenCountByLevel.getOrDefault(level, 0)
+        childrenCountByLevel[level] = currentChildrenCount + node.children.size
         
-        return width
+        // Đệ quy cho các node con
+        node.children.forEach { child ->
+            countNodesAndChildrenByLevel(child, level + 1, nodesByLevel, childrenCountByLevel)
+        }
     }
 
-    private fun layoutNode(node: TreeFragment.TreeNode, level: Int, x: Float, availableWidth: Float) {
-        Log.d(TAG, "Layout node: ${node.profile?.name}, level: $level, x: $x")
+    private fun calculateLevelSpacings(
+        nodesByLevel: Map<Int, List<TreeNode>>,
+        childrenCountByLevel: Map<Int, Int>,
+        totalWidth: Float
+    ): Map<Int, Float> {
+        val spacings = mutableMapOf<Int, Float>()
+        
+        nodesByLevel.forEach { (level, nodes) ->
+            val totalNodes = nodes.size
+            if (totalNodes > 1) {
+                // Tính toán tổng số node con ở level tiếp theo
+                val nextLevelChildrenCount = childrenCountByLevel[level + 1] ?: 0
+                
+                // Tính toán khoảng cách cần thiết dựa trên số lượng node con
+                val requiredSpacing = if (nextLevelChildrenCount > 0) {
+                    // Nếu có node con, tính toán dựa trên số lượng node con
+                    val isEven = nextLevelChildrenCount % 2 == 0
+                    val centerOffset = if (isEven) {
+                        // Nếu số lượng con chẵn, căn giữa giữa hai node con ở giữa
+                        (NODE_WIDTH / 2).toFloat()
+                    } else {
+                        // Nếu số lượng con lẻ, căn giữa node con ở giữa
+                        0f
+                    }
+                    
+                    // Tính toán tổng chiều rộng cần thiết
+                    val totalRequiredWidth = (nextLevelChildrenCount - 1) * NODE_SPACING + 
+                                          nextLevelChildrenCount * NODE_WIDTH + 
+                                          centerOffset * 2
+                    
+                    // Thêm padding để tránh chồng chéo
+                    totalRequiredWidth + NODE_WIDTH
+                } else {
+                    // Nếu không có node con, sử dụng khoảng cách tối thiểu
+                    (NODE_SPACING + NODE_WIDTH).toFloat()
+                }
+                
+                // Tính toán khoảng cách thực tế
+                val spacing = if (requiredSpacing > totalWidth) {
+                    // Nếu không gian không đủ, sử dụng khoảng cách tối thiểu
+                    (MIN_SPACING + NODE_WIDTH).toFloat()
+                } else {
+                    // Nếu có đủ không gian, sử dụng khoảng cách đã tính
+                    requiredSpacing / (totalNodes - 1).toFloat()
+                }
+                
+                spacings[level] = spacing
+            }
+        }
+        
+        return spacings
+    }
+
+    private fun layoutNodeWithSpacing(node: TreeNode, level: Int, x: Float, availableWidth: Float, levelSpacings: Map<Int, Float>) {
         val nodeView = nodeViews[node.profileId] ?: return
         
-        // Position the main node with zoom factor
-        val y = level * levelSpacing.toFloat()
-        nodeView.x = (x - nodeWidth / 2) * scaleFactor + focusX
-        nodeView.y = y * scaleFactor + focusY
+        // Tính toán vị trí y dựa trên level
+        val y = level * LEVEL_SPACING.toFloat()
+        
+        // Đặt vị trí cho node, áp dụng scale factor
+        nodeView.x = (x - NODE_WIDTH / 2 + focusX) * scaleFactor
+        nodeView.y = (y + focusY) * scaleFactor
         nodeView.scaleX = scaleFactor
         nodeView.scaleY = scaleFactor
-        Log.d(TAG, "Node positioned: ${node.profile?.name} at (${nodeView.x}, ${nodeView.y})")
-        
-        // Position partner if exists, otherwise position add partner button
-        if (node.partner != null) {
-            val partnerView = nodeViews[node.partner.profileId] ?: return
-            partnerView.x = (x + nodeWidth + pairSpacing) * scaleFactor + focusX
-            partnerView.y = y * scaleFactor + focusY
-            partnerView.scaleX = scaleFactor
-            partnerView.scaleY = scaleFactor
-            Log.d(TAG, "Partner positioned: ${node.partner.profile?.name} at (${partnerView.x}, ${partnerView.y})")
-        } else {
-            val addPartnerButton = nodeViews["add_partner_${node.profileId}"] ?: return
-            addPartnerButton.x = (x + nodeWidth + pairSpacing) * scaleFactor + focusX
-            addPartnerButton.y = (y + (nodeHeight - 40) / 2) * scaleFactor + focusY
-            addPartnerButton.scaleX = scaleFactor
-            addPartnerButton.scaleY = scaleFactor
-        }
 
-        // Position add child button
-        val addChildButton = nodeViews["add_child_${node.profileId}"] ?: return
-        addChildButton.x = (x - 15) * scaleFactor + focusX
-        addChildButton.y = (y + nodeHeight + addChildButtonSpacing) * scaleFactor + focusY
-        addChildButton.scaleX = scaleFactor
-        addChildButton.scaleY = scaleFactor
-        
-        // Position children
+        // Bố trí các node con
         if (node.children.isNotEmpty()) {
-            val childWidth = availableWidth / node.children.size
+            // Sử dụng khoảng cách của level con
+            val spacing = levelSpacings[level + 1] ?: (NODE_SPACING + NODE_WIDTH).toFloat()
+            
+            // Tính toán tổng chiều rộng cần thiết cho các node con
+            val totalWidth = (node.children.size - 1) * spacing + node.children.size * NODE_WIDTH
+            
+            // Tính toán điểm bắt đầu để căn giữa các node con
+            val startX = x - totalWidth / 2 + NODE_WIDTH / 2
+
+            // Bố trí từng node con
             node.children.forEachIndexed { index, child ->
-                val childX = x - availableWidth / 2 + childWidth * (index + 0.5f)
-                layoutNode(child, level + 1, childX, childWidth)
+                val childX = startX + index * (NODE_WIDTH + spacing)
+                // Chia đều không gian cho các node con
+                val childAvailableWidth = (availableWidth - NODE_WIDTH) / node.children.size
+                layoutNodeWithSpacing(child, level + 1, childX, childAvailableWidth, levelSpacings)
             }
         }
     }
 
-    fun setOnNodeClickListener(listener: (TreeFragment.TreeNode) -> Unit) {
-        onNodeClickListener = listener
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        canvas.save()
+        // Áp dụng hệ số di chuyển cho các đường thẳng
+        canvas.translate(focusX * LINE_MOVE_FACTOR , focusY * LINE_MOVE_FACTOR )
+        canvas.scale(scaleFactor, scaleFactor, 0f, 0f)
+        drawConnections(canvas)
+        canvas.restore()
     }
 
-    fun setOnAddPartnerClickListener(listener: (TreeFragment.TreeNode) -> Unit) {
-        onAddPartnerClickListener = listener
+    private fun drawConnections(canvas: Canvas) {
+        // Vẽ kết nối cho từng node cha riêng biệt
+        rootNode?.let { root ->
+            drawNodeConnections(root, canvas)
+        }
     }
 
-    fun setOnAddChildClickListener(listener: (TreeFragment.TreeNode) -> Unit) {
-        onAddChildClickListener = listener
-    }
+    private fun drawNodeConnections(node: TreeNode, canvas: Canvas) {
+        val nodeView = nodeViews[node.profileId] ?: return
+        if (node.children.isEmpty()) return
 
-    private fun createNodeView(node: TreeFragment.TreeNode): View {
-        Log.d(TAG, "Creating node view for: ${node.profile?.name} with gender: ${node.profile?.gender}")
-        val layoutId = if (node.profile?.gender == "Nam") R.layout.family_tree_node_male else R.layout.family_tree_node_female
-        val view = LayoutInflater.from(context).inflate(layoutId, this, false)
-        
-        // Set name
-        view.findViewById<TextView>(R.id.node_name).text = node.profile?.name ?: "Unknown"
-        
-        // Set dates
-        val dateText = node.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_"
-        view.findViewById<TextView>(R.id.node_dates).text = dateText
-        
-        // Set image
-        val imageView = view.findViewById<ImageView>(R.id.node_image)
-        if (node.profile?.gender == "Nam" || node.profile?.gender == "male") {
-            imageView.setImageResource(R.drawable.download_5)
+        // Tính toán điểm kết nối từ node cha
+        val parentCenterX = (nodeView.x + NODE_WIDTH / 2) / scaleFactor
+        val parentCenterY = (nodeView.y + NODE_HEIGHT) / scaleFactor
+
+        // Tính toán vị trí của các node con
+        val childCenters = node.children.mapNotNull { child ->
+            nodeViews[child.profileId]?.let { view ->
+                ((view.x + NODE_WIDTH / 2) / scaleFactor) to (view.y / scaleFactor)
+            }
+        }
+
+        if (childCenters.isEmpty()) return
+
+        // Tính toán khoảng cách giữa node cha và node con đầu tiên
+        val verticalGap = childCenters.first().second - parentCenterY
+        val horizontalY = parentCenterY + verticalGap * 0.3f // Điểm giao giữa đường đứng và đường ngang
+
+        if (childCenters.size == 1) {
+            // Trường hợp chỉ có một node con - vẽ đường thẳng
+            path.reset()
+            path.moveTo(parentCenterX, parentCenterY)
+            path.lineTo(childCenters.first().first, childCenters.first().second)
+            canvas.drawPath(path, paint)
         } else {
-            imageView.setImageResource(R.drawable.download_5)
+            // Trường hợp có nhiều node con
+            // Vẽ đường thẳng đứng từ node cha
+            path.reset()
+            path.moveTo(parentCenterX, parentCenterY)
+            path.lineTo(parentCenterX, horizontalY)
+            canvas.drawPath(path, paint)
+
+            // Vẽ đường ngang kết nối các node con của node cha hiện tại
+            val leftX = childCenters.first().first
+            val rightX = childCenters.last().first
+
+            path.reset()
+            path.moveTo(leftX, horizontalY)
+            path.lineTo(rightX, horizontalY)
+            canvas.drawPath(path, paint)
+
+            // Vẽ đường thẳng đứng đến từng node con
+            childCenters.forEach { (centerX, centerY) ->
+                path.reset()
+                path.moveTo(centerX, horizontalY)
+                path.lineTo(centerX, centerY)
+                canvas.drawPath(path, paint)
+            }
         }
 
-        // Add click listener
-        view.setOnClickListener {
-            onNodeClickListener?.invoke(node)
+        // Vẽ kết nối cho các node con
+        node.children.forEach { child ->
+            drawNodeConnections(child, canvas)
         }
-        
-        // Add to view hierarchy
-        addView(view)
-        Log.d(TAG, "Node view created and added for: ${node.profile?.name} with layout: ${if (layoutId == R.layout.family_tree_node_male) "male" else "female"}")
-        return view
     }
 
     private fun formatTimestamp(timestamp: Timestamp?): String {
         return timestamp?.toDate()?.let { dateFormat.format(it) } ?: "_/_"
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        Log.d(TAG, "onDraw called")
-        
-        // Save canvas state
-        canvas.save()
-        
-        // Apply zoom and translation
-        canvas.translate(focusX, focusY)
-        canvas.scale(scaleFactor, scaleFactor)
-        canvas.translate(-focusX, -focusY)
-        
-        drawConnections(canvas)
-        
-        // Restore canvas state
-        canvas.restore()
-    }
-
-    private fun drawConnections(canvas: Canvas) {
-        rootNode?.let { drawNodeConnections(it, canvas) }
-    }
-
-    private fun drawNodeConnections(node: TreeFragment.TreeNode, canvas: Canvas) {
-        val nodeView = nodeViews[node.profileId] ?: return
-        Log.d(TAG, "Drawing connections for ${node.profile?.name}")
-
-        if (node.children.isEmpty()) return
-
-        // Calculate parent couple center point
-        val parentCenterX = if (node.partner != null) {
-            val partnerView = nodeViews[node.partner.profileId]
-            if (partnerView != null) {
-                (nodeView.x + partnerView.x + nodeWidth) / 2
-            } else {
-                nodeView.x + nodeWidth / 2
-            }
-        } else {
-            nodeView.x + nodeWidth / 2
-        }
-        val parentCenterY = nodeView.y + nodeHeight
-
-        // Calculate all children center points
-        val childCenters = node.children.map { child ->
-            val childView = nodeViews[child.profileId]
-            if (child.partner != null) {
-                val childPartnerView = nodeViews[child.partner.profileId]
-                if (childView != null && childPartnerView != null) {
-                    ((childView.x + childPartnerView.x + nodeWidth) / 2) to (childView.y)
-                } else if (childView != null) {
-                    (childView.x + nodeWidth / 2) to (childView.y)
-                } else null
-            } else if (childView != null) {
-                (childView.x + nodeWidth / 2) to (childView.y)
-            } else null
-        }.filterNotNull()
-
-        if (childCenters.isEmpty()) return
-
-        // Get leftmost and rightmost child center
-        val leftX = childCenters.first().first
-        val rightX = childCenters.last().first
-        // The y for the horizontal line (just above the children)
-        val horizontalY = childCenters.minOf { it.second } - 40 * scaleFactor
-        // The center x of the horizontal line
-        val horizontalCenterX = (leftX + rightX) / 2
-
-        // Draw vertical line from parent center down to horizontal line center
-        path.reset()
-        path.moveTo(parentCenterX / scaleFactor, parentCenterY / scaleFactor)
-        path.lineTo(parentCenterX / scaleFactor, horizontalY / scaleFactor)
-        path.lineTo(horizontalCenterX / scaleFactor, horizontalY / scaleFactor)
-        canvas.drawPath(path, paint)
-
-        // Draw horizontal line connecting all children centers
-        path.reset()
-        path.moveTo(leftX / scaleFactor, horizontalY / scaleFactor)
-        path.lineTo(rightX / scaleFactor, horizontalY / scaleFactor)
-        canvas.drawPath(path, paint)
-
-        // Draw vertical lines from horizontal line down to each child center
-        childCenters.forEach { (centerX, centerY) ->
-            path.reset()
-            path.moveTo(centerX / scaleFactor, horizontalY / scaleFactor)
-            path.lineTo(centerX / scaleFactor, centerY / scaleFactor)
-            canvas.drawPath(path, paint)
-        }
-
-        // Draw connections for children recursively
-        node.children.forEach { child ->
-            drawNodeConnections(child, canvas)
-        }
-    }
-
-    private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            scaleFactor *= detector.scaleFactor
-            scaleFactor = max(minScale, min(scaleFactor, maxScale))
-            
-            // Update focus point
-            focusX = detector.focusX
-            focusY = detector.focusY
-            
-            // Relayout all nodes with new scale
-            rootNode?.let { layoutNode(it, 0, width / 2f, width.toFloat()) }
-            
-            invalidate()
-            return true
-        }
-    }
-
-    override fun onTouchEvent(event: android.view.MotionEvent): Boolean {
-        scaleDetector.onTouchEvent(event)
-
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
-            android.view.MotionEvent.ACTION_DOWN -> {
+            MotionEvent.ACTION_DOWN -> {
                 lastTouchX = event.x
                 lastTouchY = event.y
                 activePointerId = event.getPointerId(0)
                 mode = Mode.DRAG
             }
-            android.view.MotionEvent.ACTION_POINTER_DOWN -> {
-                mode = Mode.ZOOM
-            }
-            android.view.MotionEvent.ACTION_MOVE -> {
+            MotionEvent.ACTION_MOVE -> {
                 if (mode == Mode.DRAG) {
                     val pointerIndex = event.findPointerIndex(activePointerId)
                     val x = event.getX(pointerIndex)
@@ -412,17 +507,15 @@ class FamilyTreeView @JvmOverloads constructor(
                     lastTouchX = x
                     lastTouchY = y
                     
-                    // Relayout all nodes with new position
-                    rootNode?.let { layoutNode(it, 0, width / 2f, width.toFloat()) }
-                    
+                    requestLayout()
                     invalidate()
                 }
             }
-            android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 activePointerId = INVALID_POINTER_ID
                 mode = Mode.NONE
             }
-            android.view.MotionEvent.ACTION_POINTER_UP -> {
+            MotionEvent.ACTION_POINTER_UP -> {
                 val pointerIndex = event.actionIndex
                 val pointerId = event.getPointerId(pointerIndex)
                 if (pointerId == activePointerId) {
@@ -434,5 +527,17 @@ class FamilyTreeView @JvmOverloads constructor(
             }
         }
         return true
+    }
+
+    fun setOnNodeClickListener(listener: (TreeNode) -> Unit) {
+        onNodeClickListener = listener
+    }
+
+    fun setOnAddPartnerClickListener(listener: (TreeNode) -> Unit) {
+        onAddPartnerClickListener = listener
+    }
+
+    fun setOnAddChildClickListener(listener: (TreeNode) -> Unit) {
+        onAddChildClickListener = listener
     }
 } 

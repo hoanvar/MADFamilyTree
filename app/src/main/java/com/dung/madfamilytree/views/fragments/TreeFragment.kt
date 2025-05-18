@@ -13,18 +13,17 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dung.madfamilytree.R
-import com.dung.madfamilytree.databinding.FragmentHomeBinding
 import com.dung.madfamilytree.databinding.FragmentTreeBinding
 import com.dung.madfamilytree.dtos.NodeDTO
 import com.dung.madfamilytree.dtos.ProfileDTO
+import com.dung.madfamilytree.dtos.TreeNode
+import com.dung.madfamilytree.utility.TreeUtility
 import com.dung.madfamilytree.utility.Utility
 import com.dung.madfamilytree.views.custom.FamilyTreeView
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FieldPath
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
@@ -58,6 +57,16 @@ class TreeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated called")
         
+        // Set up back button click listener
+        binding.btnBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+        // Set up family tree button click listener
+        binding.btnFamilyTree.setOnClickListener {
+            findNavController().navigate(R.id.action_tree_to_familyTreeFragment)
+        }
+
         familyTreeView = view.findViewById(R.id.familyTreeView)
         val treeId = Utility.treeId
         Log.d(TAG, "TreeId: $treeId")
@@ -100,25 +109,22 @@ class TreeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val treeName = Utility.getTreeName()
-                binding.treeTitle.text = treeName ?: "Gia Phả"
             } catch (e: Exception) {
-                Log.e(TAG, "Error getting tree name", e)
-                binding.treeTitle.text = "Gia Phả"
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             Log.d(TAG, "Starting to fetch family tree data")
-            val (nodes, profiles) = fetchFamilyTree(treeId)
+            val (nodes, profiles) = TreeUtility.fetchFamilyTree(treeId)
             Log.d(TAG, "Fetched nodes count: ${nodes?.size}")
             Log.d(TAG, "Fetched profiles count: ${profiles.size}")
             
             nodes?.let {
                 val rootId = Utility.rootId
                 Log.d(TAG, "RootId: $rootId")
-                val treeRoot = buildTree(rootId, it, profiles)
+                val treeRoot = TreeUtility.buildTree(rootId, it, profiles)
                 Log.d(TAG, "Tree built successfully: ${treeRoot != null}")
-                printTreeToLog(treeRoot)
+                TreeUtility.printTreeToLog(treeRoot)
                 
                 // Set the tree in our custom view
                 treeRoot?.let { root ->
@@ -233,10 +239,10 @@ class TreeFragment : Fragment() {
                     nodeRef?.reference?.update("id_partner", profileId)?.await()
 
                     // Refresh tree view
-                    val (nodes, profiles) = fetchFamilyTree(Utility.treeId)
+                    val (nodes, profiles) = TreeUtility.fetchFamilyTree(Utility.treeId)
                     nodes?.let {
                         val rootId = Utility.rootId
-                        val treeRoot = buildTree(rootId, it, profiles)
+                        val treeRoot = TreeUtility.buildTree(rootId, it, profiles)
                         treeRoot?.let { root ->
                             familyTreeView.setTree(root)
                         }
@@ -410,10 +416,10 @@ class TreeFragment : Fragment() {
 
                     Log.d(TAG, "Refreshing tree view...")
                     // Refresh tree view
-                    val (nodes, profiles) = fetchFamilyTree(Utility.treeId)
+                    val (nodes, profiles) = TreeUtility.fetchFamilyTree(Utility.treeId)
                     nodes?.let {
                         val rootId = Utility.rootId
-                        val treeRoot = buildTree(rootId, it, profiles)
+                        val treeRoot = TreeUtility.buildTree(rootId, it, profiles)
                         treeRoot?.let { root ->
                             familyTreeView.setTree(root)
                         }
@@ -433,124 +439,4 @@ class TreeFragment : Fragment() {
 
         dialog.show()
     }
-
-    data class TreeNode(
-        val profileId: String,
-        val profile: ProfileDTO?,
-        val partner: TreeNode? = null,
-        val children: MutableList<TreeNode> = mutableListOf()
-    )
-
-    suspend fun fetchFamilyTree(treeId: String): Pair<List<NodeDTO>?, MutableMap<String, ProfileDTO>> {
-        Log.d(TAG, "fetchFamilyTree started for treeId: $treeId")
-
-        val nodes = Utility.db?.collection("Node")
-            ?.whereEqualTo("id_tree", treeId)
-            ?.get()?.await()
-            ?.mapNotNull { it.toObject(NodeDTO::class.java) }
-        
-        Log.d(TAG, "Raw nodes fetched: ${nodes?.size}")
-        val snapshot = Utility.db?.collection("Node")
-            ?.whereEqualTo("id_tree", treeId)
-            ?.get()?.await()
-
-        snapshot?.forEach {
-            Log.d(TAG, "Raw Node document: ${it.data}")
-        }
-
-        // Truy xuất tất cả profile liên quan
-        val profileIds = nodes?.flatMap { listOfNotNull(it.id_profile, it.id_partner) + (it.id_children ?: emptyList()) }
-            ?.filterNotNull()
-            ?.toSet()
-        logAllNodeIds(nodes)
-        
-        Log.d(TAG, "Profile IDs to fetch: ${profileIds?.size}")
-
-        val profiles = mutableMapOf<String, ProfileDTO>()
-        profileIds?.chunked(10)?.forEach { batch ->
-            val batchProfiles = Utility.db?.collection("Profile")
-                ?.whereIn(FieldPath.documentId(), batch)
-                ?.get()?.await()
-                ?.map { doc -> doc.id to doc.toObject(ProfileDTO::class.java) }
-            
-            Log.d(TAG, "Fetched batch of profiles: ${batchProfiles?.size}")
-            batchProfiles?.forEach { (id, profile) -> profiles[id] = profile }
-        }
-
-        return Pair(nodes, profiles)
-    }
-
-    fun buildTree(rootId: String, nodes: List<NodeDTO>, profiles: Map<String, ProfileDTO>): TreeNode? {
-        Log.d(TAG, "buildTree started for rootId: $rootId")
-
-        val nodeMap = nodes.associateBy { it.id_profile }
-        val visited = mutableSetOf<String>()
-
-        fun helper(id: String?): TreeNode? {
-            if (id == null || visited.contains(id)) return null
-            visited.add(id)
-
-            val profile = profiles[id] ?: return null
-            val node = nodeMap[id]
-
-            // Partner chỉ thêm vào nếu tồn tại, không đệ quy partner
-            val partnerId = node?.id_partner
-            val partnerProfile = profiles[partnerId]
-
-            val partnerNode = if (partnerId != null && !visited.contains(partnerId)) {
-                visited.add(partnerId)
-                TreeNode(
-                    profileId = partnerId,
-                    profile = partnerProfile
-                )
-            } else null
-
-            // Con cái
-            val children = node?.id_children?.mapNotNull { helper(it) }?.toMutableList() ?: mutableListOf()
-
-            return TreeNode(
-                profileId = id,
-                profile = profile,
-                partner = partnerNode,
-                children = children
-            )
-        }
-
-        return helper(rootId)
-    }
-
-
-    fun printTreeToLog(root: TreeNode?, indent: String = "") {
-        if (root == null) {
-            Log.d(TAG, "printTreeToLog: root is null")
-            return
-        }
-
-        val name = root.profile?.name ?: "Unknown"
-        Log.d(TAG, "$indent👤 $name (ID: ${root.profileId})")
-
-        root.partner?.let { partner ->
-            val partnerName = partner.profile?.name ?: "Unknown"
-            Log.d(TAG, "$indent   💍 Partner: $partnerName (ID: ${partner.profileId})")
-        }
-
-        root.children.forEach { child ->
-            printTreeToLog(child, indent + "   ")
-        }
-    }
-
-    private fun logAllNodeIds(nodes: List<NodeDTO>?) {
-        if (nodes.isNullOrEmpty()) {
-            Log.d(TAG, "No nodes to display.")
-            return
-        }
-
-        Log.d(TAG, "==== Node IDs Detail ====")
-        nodes.forEachIndexed { index, node ->
-            Log.d(TAG, "Node[$index] -, id_profile: ${node.id_profile}, id_partner: ${node.id_partner}, id_children: ${node.id_children}")
-        }
-        Log.d(TAG, "==========================")
-    }
-
-
 } 
