@@ -74,6 +74,9 @@ object Utility {
                                     }
                             }
                     }
+                    if(invokeResult.size() == 0){
+                        cont.resume(tempAlbumList)
+                    }
                 }
         }
     }
