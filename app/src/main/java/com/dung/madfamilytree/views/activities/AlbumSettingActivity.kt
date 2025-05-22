@@ -79,6 +79,11 @@ class AlbumSettingActivity : BaseActivity() {
             intent.putExtra(UpdateAlbumActivity.ALBUM_ID,viewModel.albumId)
             updateAlbumRegistorForActivityResult.launch(intent)
         }
+
+        binding.share.setOnClickListener {
+
+        }
+
         binding.deleteAlbumBtn.setOnClickListener {
             val localBinding = DeleteImagePopupBinding.inflate(layoutInflater)
             val popupWindow = PopupWindow(
