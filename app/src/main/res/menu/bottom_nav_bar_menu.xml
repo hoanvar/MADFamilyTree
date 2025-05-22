@@ -8,14 +8,17 @@
         android:id="@+id/albumFragment"
         android:icon="@drawable/album_icon"
         android:title="@string/album_item_text"/>
+
     <item
-        android:id="@+id/item_none"
-        android:title=""/>
-    <item android:id="@+id/profile"
-        android:title="@string/profile_item_text"
-        android:icon="@drawable/profile_icon"/>
+        android:id="@+id/notificationFragment"
+        android:title="Thông báo"
+        android:icon="@drawable/notification_icon"/>
     <item
         android:id="@+id/tree"
         android:title="@string/tree_item_text"
         android:icon="@drawable/tree_icon"/>
+
+    <item android:id="@+id/profile"
+        android:title="@string/profile_item_text"
+        android:icon="@drawable/profile_icon"/>
 </menu>

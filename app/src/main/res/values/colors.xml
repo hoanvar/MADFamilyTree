@@ -14,4 +14,7 @@
     <color name="family_node_background_blue">#B8E3FE</color>
     <color name="popup_title_red">#FF0000</color>
     <color name="green">#34BD0E</color>
+    <color name="search_box">#F5FFFF</color>
+    <color name="orange">#FF8629</color>
+    <color name="green_btn">#69CF84</color>
 </resources>

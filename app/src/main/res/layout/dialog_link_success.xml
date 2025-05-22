@@ -1,0 +1,33 @@
+<!-- res/layout/dialog_link_success.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@drawable/bg_dialog_rounded">
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/confirm"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đã gửi yêu cầu ghép nối tới thành viên"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnViewResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kết quả ghép nối"
+        android:backgroundTint="@color/teal_200" />
+</LinearLayout>

@@ -1,15 +1,19 @@
 package com.dung.madfamilytree.views.fragments
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.dung.madfamilytree.R
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.firestore.FirebaseFirestore
+import com.dung.madfamilytree.R
+import com.dung.madfamilytree.dtos.LinkRequests
+import com.dung.madfamilytree.utility.Utility
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,28 +36,82 @@ class NotificationFragment : Fragment() {
 
         // Khởi tạo Firestore và UI
         firestore = FirebaseFirestore.getInstance()
-        tvNoNotifications = view.findViewById(R.id.tv_no_notifications)
-        notificationsList = view.findViewById(R.id.notifications_list)
 
-        // Lấy thông báo từ Firestore
+        tvNoNotifications = view.findViewById(R.id.tvEmpty)
+        notificationsList = view.findViewById(R.id.notificationsList)
+
+// Lấy thông báo từ Firestore
         fetchEventNotifications()
+        fetchLinkRequests()
+
+
     }
+    private fun fetchLinkRequests() {
+        val userId = Utility.accountId ?: return
+
+        tvNoNotifications.visibility = View.GONE
+        notificationsList.visibility = View.VISIBLE
+
+        // Thêm event từ intent nếu có (ví dụ: từ FirebaseMessagingService)
+        val eventMessage = arguments?.getString("event_message")
+        if (!eventMessage.isNullOrBlank()) {
+            val itemView = layoutInflater.inflate(R.layout.item_notification, notificationsList, false)
+            itemView.findViewById<TextView>(R.id.tvMessage).text = eventMessage
+            itemView.findViewById<TextView>(R.id.tvTime).text = "Vừa xong"
+            notificationsList.addView(itemView)
+        }
+
+        // Load link requests
+        firestore.collection("LinkRequests")
+            .whereEqualTo("toId", userId)
+            .whereEqualTo("status", "pending")
+            .get()
+            .addOnSuccessListener { result ->
+                if (result.isEmpty && eventMessage.isNullOrBlank()) {
+                    tvNoNotifications.visibility = View.VISIBLE
+                    notificationsList.visibility = View.GONE
+                    return@addOnSuccessListener
+                }
+
+                for (doc in result) {
+                    val requestId = doc.id
+                    val fromId = doc.getString("fromId") ?: continue
+                    val fromName = doc.getString("fromName") ?: "Người dùng không rõ"
+                    val timestamp = doc.getTimestamp("timestamp")
+
+                    val message = "Bạn nhận được yêu cầu kết nối từ $fromName"
+
+                    val itemView = layoutInflater.inflate(R.layout.item_notification, notificationsList, false)
+                    itemView.findViewById<TextView>(R.id.tvMessage).text = message
+                    itemView.findViewById<TextView>(R.id.tvTime).text = Utility.formatTimestamp(timestamp)
+
+                    itemView.setOnClickListener {
+                        val action = NotificationFragmentDirections
+                            .actionNotificationFragmentToRequestDetailFragment(requestId, fromName, fromId)
+                        findNavController().navigate(action)
+                    }
+
+                    notificationsList.addView(itemView)
+                }
+            }
+    }
+
 
     private fun fetchEventNotifications() {
         val eventsRef = firestore.collection("events")
 
-        // Lấy tất cả các tài liệu trong collection "events"
+// Lấy tất cả các tài liệu trong collection "events"
         eventsRef.get()
             .addOnSuccessListener { result ->
-                // Kiểm tra nếu có dữ liệu
                 if (!result.isEmpty) {
+                    // Kiểm tra nếu có dữ liệu
                     tvNoNotifications.visibility = View.GONE
                     notificationsList.visibility = View.VISIBLE
 
-                    // Khởi tạo TreeMap để sắp xếp sự kiện theo ngày
+// Khởi tạo TreeMap để sắp xếp sự kiện theo ngày
                     val sortedEvents = sortedMapOf<Date, String>()
 
-                    // Duyệt qua các tài liệu trong Firestore
+// Duyệt qua các tài liệu trong Firestore
                     result.forEach { document ->
                         val eventName = document.getString("name")
                         val eventDate = document.getString("eventDate")
@@ -76,18 +134,13 @@ class NotificationFragment : Fragment() {
                             }
                         }
                     }
-
                     // Thêm các sự kiện đã sắp xếp vào danh sách thông báo
-                    for ((eventDate, notificationText) in sortedEvents) {
+                    for ((_, notificationText) in sortedEvents) {
                         addNotification(notificationText)
                     }
-
-                } else {
-                    tvNoNotifications.visibility = View.VISIBLE
-                    notificationsList.visibility = View.GONE
                 }
             }
-            .addOnFailureListener { exception ->
+            .addOnFailureListener {
                 tvNoNotifications.text = "Error loading notifications"
                 tvNoNotifications.visibility = View.VISIBLE
                 notificationsList.visibility = View.GONE
@@ -100,14 +153,11 @@ class NotificationFragment : Fragment() {
         val eventDateObj = formatter.parse(eventDate)
         val currentDate = Date()
 
-        // Tính số ngày còn lại
+// Tính số ngày còn lại
         val diffInMillis = eventDateObj.time - currentDate.time
+        if (diffInMillis < 0) return ""
 
-        // Nếu thời gian còn lại là âm, tức là sự kiện đã qua, hiển thị thông báo sự kiện đã diễn ra
-        if (diffInMillis < 0) {
-            return ""  // Trả về chuỗi rỗng nếu sự kiện đã diễn ra
-        }
-
+// Nếu thời gian còn lại là âm, tức là sự kiện đã qua, hiển thị thông báo sự kiện đã diễn ra
         val diffInDays = (diffInMillis / (1000 * 60 * 60 * 24)).toInt()
         val diffInHours = (diffInMillis / (1000 * 60 * 60)).toInt() % 24
         val diffInMinutes = (diffInMillis / (1000 * 60)).toInt() % 60
@@ -120,15 +170,22 @@ class NotificationFragment : Fragment() {
             diffInDays == 1 -> "Còn 1 ngày nữa đến sự kiện: $eventName"
             diffInDays <= 3 -> "Còn $diffInDays ngày nữa đến sự kiện: $eventName"
             diffInDays <= 7 -> "Sắp đến sự kiện: $eventName (còn $diffInDays ngày)"
-            else -> "" // Không thông báo nếu xa hơn 1 tuần
+            else -> ""
         }
     }
 
     private fun addNotification(notification: String) {
         // Inflate item_notification layout và thêm vào notificationsList
         layoutInflater.inflate(R.layout.item_notification, notificationsList, false).apply {
-            findViewById<TextView>(R.id.tv_notification_text).text = notification
+            findViewById<TextView>(R.id.tvMessage).text = notification
             notificationsList.addView(this)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        fetchLinkRequests()
+        fetchEventNotifications()
+    }
+
 }

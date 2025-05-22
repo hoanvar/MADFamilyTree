@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata)
     implementation(libs.glide)
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

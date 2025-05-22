@@ -26,11 +26,14 @@
             android:id="@+id/action_homeFragment_to_shareFragment"
             app:destination="@id/shareFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
+            android:id="@+id/action_homeFragment_to_accountSearchFragment"
+            app:destination="@id/accountSearchFragment" />
         <action
             android:id="@+id/action_homeFragment_to_statisticsFragment"
             app:destination="@id/statisticsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment" />
     </fragment>
 
     <fragment
@@ -68,12 +71,6 @@
         tools:layout="@layout/fragment_share" />
 
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.dung.madfamilytree.views.fragments.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
-
-    <fragment
         android:id="@+id/statisticsFragment"
         android:name="com.dung.madfamilytree.views.fragments.StatisticsFragment"
         android:label="fragment_statistics"
@@ -95,7 +92,37 @@
         android:id="@+id/notificationFragment"
         android:name="com.dung.madfamilytree.views.fragments.NotificationFragment"
         android:label="Thông báo"
-        tools:layout="@layout/fragment_notification" />
+        tools:layout="@layout/fragment_notification">
+
+        <action
+            android:id="@+id/action_notificationFragment_to_requestDetailFragment"
+            app:destination="@id/requestDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestDetailFragment"
+        android:name="com.dung.madfamilytree.views.fragments.RequestDetailFragment"
+        android:label="Chi tiết yêu cầu"
+        tools:layout="@layout/fragment_request_detail">
+        <!--        <argument-->
+        <!--            android:name="profileId"-->
+        <!--            app:argType="string" />-->
+        <argument
+            android:name="requestId"
+            app:argType="string" />
+
+        <argument
+            android:name="fromName"
+            app:argType="string" />
+
+        <argument
+            android:name="fromId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_requestDetailFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/profileCardFragment"
@@ -159,5 +186,48 @@
             app:argType="string"
             android:defaultValue="" />
     </fragment>
+    <fragment
+        android:id="@+id/linkResult"
+        android:name="com.dung.madfamilytree.views.fragments.LinkResultFragment"
+        android:label="linkResult"
+        tools:layout="@layout/fragment_link_result">
+        <action
+            android:id="@+id/action_linkResult_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <!--    Tim kiem tai khoan-->
+    <fragment
+        android:id="@+id/accountSearchFragment"
+        android:name="com.dung.madfamilytree.views.fragments.AccountSearchFragment"
+        android:label="Tìm kiếm tài khoản"
+        tools:layout="@layout/fragment_account_search">
+        <action
+            android:id="@+id/action_accountSearchFragment_to_profileDetail"
+            app:destination="@id/profileDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileDetail"
+        android:name="com.dung.madfamilytree.views.fragments.ProfileDetailFragment"
+        android:label="Chi tiet"
+        tools:layout="@layout/fragment_profile_detail">
+        <action
+            android:id="@+id/action_profileDetail_to_personalInfo"
+            app:destination="@id/personalInfo" />
+        <action
+            android:id="@+id/action_profileDetail_to_relationInfo"
+            app:destination="@id/relationInfo" />
+    </fragment>
+    <fragment
+        android:id="@+id/personalInfo"
+        android:name="com.dung.madfamilytree.views.fragments.PersonalInfoFragment"
+        android:label="Thông tin cá nhân"
+        tools:layout="@layout/fragment_personal_info" />
+    <fragment
+        android:id="@+id/relationInfo"
+        android:name="com.dung.madfamilytree.views.fragments.RelationInfoFragment"
+        tools:layout="@layout/fragment_relation_info"
+        android:label="Thong tin gia dinh"/>
+
 
 </navigation>
