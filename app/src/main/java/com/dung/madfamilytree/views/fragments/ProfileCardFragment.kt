@@ -72,16 +72,6 @@ class ProfileCardFragment : Fragment() {
         val profileId = args.profileId
         checkLinkStatus(profileId)
 
-        // Đăng ký nhận kết quả từ EditBiographyActivity
-        editBiographyLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val newBio = result.data?.getStringExtra("updatedBiography") ?: ""
-                binding.tvBiography.text = newBio
-            }
-        }
-
         binding.switchDeceased.setOnCheckedChangeListener { _, isChecked ->
             binding.deceasedInfoLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
         }

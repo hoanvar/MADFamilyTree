@@ -1,10 +1,12 @@
 package com.dung.madfamilytree.views.custom
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Rect
+import android.net.Uri
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,8 +18,12 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.layout.ScaleFactor
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.dung.madfamilytree.R
 import com.dung.madfamilytree.dtos.TreeNode
 import com.dung.madfamilytree.utility.TreeUtility
@@ -82,12 +88,21 @@ class FamilyTreeView @JvmOverloads constructor(
     private lateinit var zoomInButton: ImageButton
     private lateinit var zoomOutButton: ImageButton
 
+    private var selectedAvatarUri: Uri? = null
+    private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+    private lateinit var editBiographyLauncher: ActivityResultLauncher<Intent>
+
+
+
+
     init {
         setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         setupZoomButtons()
     }
 
     private fun setupZoomButtons() {
+
+
         // Tạo container cho các nút zoom
         zoomContainer = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -172,12 +187,24 @@ class FamilyTreeView @JvmOverloads constructor(
         pairView.findViewById<TextView>(R.id.male_node_dates).text = node.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_/_"
         pairView.findViewById<TextView>(R.id.male_node_die).text = node.profile?.date_of_death?.let { formatTimestamp(it) } ?: "_/_/_"
 
+        // Load avatar for male node
+        node.profile?.avatar_url?.let { avatarUrl ->
+            if (avatarUrl.isNotEmpty()) {
+                Glide.with(context)
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.profile_icon)
+                    .circleCrop()
+                    .into(pairView.findViewById<ImageView>(R.id.male_node_image))
+            } else {
+                pairView.findViewById<ImageView>(R.id.male_node_image).setImageResource(R.drawable.profile_icon)
+            }
+        } ?: pairView.findViewById<ImageView>(R.id.male_node_image).setImageResource(R.drawable.profile_icon)
 
         // Thêm click listener cho node chính
         maleNodeContainer.setOnClickListener {
             onNodeClickListener?.invoke(node)
         }
-        
+
         // Thiết lập thông tin cho partner
         if (node.partner != null) {
             val femaleNodeContainer = pairView.findViewById<LinearLayout>(R.id.female_node_container)
@@ -188,6 +215,19 @@ class FamilyTreeView @JvmOverloads constructor(
             pairView.findViewById<TextView>(R.id.female_node_name).text = node.partner.profile?.name ?: "Unknown"
             pairView.findViewById<TextView>(R.id.female_node_dates).text = node.partner.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_/_"
             pairView.findViewById<TextView>(R.id.female_node_die).text = node.partner?.profile?.date_of_death?.let { formatTimestamp(it) } ?: "_/_/_"
+
+            // Load avatar for female node
+            node.partner.profile?.avatar_url?.let { avatarUrl ->
+                if (avatarUrl.isNotEmpty()) {
+                    Glide.with(context)
+                        .load(avatarUrl)
+                        .placeholder(R.drawable.profile_icon)
+                        .circleCrop()
+                        .into(pairView.findViewById<ImageView>(R.id.female_node_image))
+                } else {
+                    pairView.findViewById<ImageView>(R.id.female_node_image).setImageResource(R.drawable.profile_icon)
+                }
+            } ?: pairView.findViewById<ImageView>(R.id.female_node_image).setImageResource(R.drawable.profile_icon)
 
             // Thêm click listener cho partner node
             femaleNodeContainer.setOnClickListener {
@@ -543,4 +583,6 @@ class FamilyTreeView @JvmOverloads constructor(
     fun setOnAddChildClickListener(listener: (TreeNode) -> Unit) {
         onAddChildClickListener = listener
     }
+
+
 } 
