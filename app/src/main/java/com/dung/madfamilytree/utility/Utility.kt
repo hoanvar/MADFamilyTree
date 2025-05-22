@@ -17,9 +17,13 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import android.util.Log
+import java.text.SimpleDateFormat
+import java.util.Locale
+import com.google.firebase.Timestamp
 
 object Utility {
     var db: FirebaseFirestore? = null
+    var myProfileId: String? = null
     var accountId = "qeCGzYEwV5w7VYpWXtdn"
     var accountName = ""
     var treeId = ""
@@ -255,6 +259,11 @@ object Utility {
         }
     }
 
+    fun formatTimestamp(timestamp: Timestamp?): String {
+        if (timestamp == null) return ""
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        return sdf.format(timestamp.toDate())
+    }
 }
 
 

@@ -56,9 +56,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:textSize="16dp"
                     android:text="Thêm avatar" />
+                <Button
+                    android:id="@+id/btnClaimProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tôi là người này"
+                    android:textSize="16dp"
+                    android:visibility="gone"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="@color/teal_700"
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
+            <TextView
+                android:id="@+id/btn_link_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Liên kết tài khoản"
+                android:textSize="16dp"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"

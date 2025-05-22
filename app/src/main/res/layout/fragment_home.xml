@@ -8,17 +8,17 @@
     android:paddingEnd="0dp"
     tools:context=".views.fragments.HomeFragment">
 
-<!--    <TextView-->
-<!--        android:id="@+id/textView8"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="150dp"-->
-<!--        android:fontFamily="@font/poppins_bold"-->
-<!--        android:text="Sự kiện gia đình"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="@dimen/small_text_size"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/shapeableImageView"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/shapeableImageView" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/textView8"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="150dp"-->
+    <!--        android:fontFamily="@font/poppins_bold"-->
+    <!--        android:text="Sự kiện gia đình"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:textSize="@dimen/small_text_size"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/shapeableImageView"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/shapeableImageView" />-->
 
     <TextView
         android:id="@+id/textView7"
@@ -44,20 +44,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/roundImageView" />
 
-    <com.dung.madfamilytree.views.customviews.CustomImageButton
-        android:id="@+id/btn_notification"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/round_input_shape"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/notification_icon"
-        app:backgroundTint="@android:color/transparent"
-        app:custom_background_color="@android:color/darker_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView7" />
-
     <!-- Tree summerize ở giữa -->
     <include
         android:id="@+id/tree_summary"
@@ -72,6 +58,8 @@
     <!-- Main menu trans dưới tree_summerize -->
     <include
         android:id="@+id/main_menu"
+
+
         layout="@layout/main_menu_trans"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
