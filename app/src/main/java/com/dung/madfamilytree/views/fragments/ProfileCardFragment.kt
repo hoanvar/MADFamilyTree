@@ -100,7 +100,7 @@ class ProfileCardFragment : Fragment() {
             }
         }
     }
-    
+
     private fun setupProfileData() {
         binding.etName.setText(args.profileName)
         binding.etAnotherName.setText(args.profileAnotherName)
