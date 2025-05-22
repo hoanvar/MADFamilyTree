@@ -19,6 +19,8 @@
             android:contentDescription="Ảnh đại diện"
             android:scaleType="centerCrop"
             android:src="@drawable/default_icon_img" />
+        
+
 
         <TextView
             android:layout_width="match_parent"

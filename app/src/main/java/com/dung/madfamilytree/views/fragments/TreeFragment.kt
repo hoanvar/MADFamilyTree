@@ -342,9 +342,9 @@ class TreeFragment : Fragment() {
         }
 
         // Setup avatar selection
-        dialogView.findViewById<Button>(R.id.btn_add_avatar).setOnClickListener {
-            pickImage.launch("image/*")
-        }
+//        dialogView.findViewById<Button>(R.id.btn_add_avatar).setOnClickListener {
+//            pickImage.launch("image/*")
+//        }
 
         // Set up save button
         dialogView.findViewById<Button>(R.id.btn_save).setOnClickListener {

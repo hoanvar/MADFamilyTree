@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import SupabaseClientProvider
+import com.dung.madfamilytree.dtos.Province
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Dispatcher
 
@@ -99,7 +100,7 @@ class ProfileCardFragment : Fragment() {
             }
         }
     }
-
+    
     private fun setupProfileData() {
         binding.etName.setText(args.profileName)
         binding.etAnotherName.setText(args.profileAnotherName)
@@ -108,8 +109,6 @@ class ProfileCardFragment : Fragment() {
         binding.etJob.setText(args.profileJob)
         binding.switchDeceased.isChecked = args.profileDied == 1
         binding.tvBiography.text = args.profileBiography ?: "Chưa có tiểu sử"
-
-        Log.d("test uri", args.profileAvatarUrl)
 
         // Load avatar if exists
         args.profileAvatarUrl?.let { avatarUrl ->
@@ -120,191 +119,207 @@ class ProfileCardFragment : Fragment() {
                     .into(binding.profileAvatar)
             }
         }
-        
 
         // Setup marital status spinner
         val maritalStatuses = arrayOf("Độc thân", "Đã kết hôn", "Ly hôn", "Góa")
-        binding.spinnerMaritalStatus.adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, maritalStatuses).apply {
-                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val maritalStatusAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, maritalStatuses).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerMaritalStatus.adapter = maritalStatusAdapter
+        // Set selected value after setting adapter
+        args.profileMaritalStatus?.let { status ->
+            val index = maritalStatuses.indexOf(status)
+            if (index >= 0) {
+                binding.spinnerMaritalStatus.setSelection(index, false)
             }
-        args.profileMaritalStatus?.let {
-            val index = maritalStatuses.indexOf(it)
-            if (index >= 0) binding.spinnerMaritalStatus.setSelection(index)
         }
 
         // Setup education level spinner
         val educationLevels = arrayOf("Tiểu học", "THCS", "THPT", "Đại học", "Thạc sĩ", "Tiến sĩ")
-        binding.spinnerEducation.adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, educationLevels).apply {
-                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val educationAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, educationLevels).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerEducation.adapter = educationAdapter
+        // Set selected value after setting adapter
+        args.profileEducationalLevel?.let { level ->
+            val index = educationLevels.indexOf(level)
+            if (index >= 0) {
+                binding.spinnerEducation.setSelection(index, false)
             }
-        args.profileEducationalLevel?.let {
-            val index = educationLevels.indexOf(it)
-            if (index >= 0) binding.spinnerEducation.setSelection(index)
         }
 
         // Setup gender spinner
         val genders = arrayOf("Nam", "Nữ", "Khác")
-        binding.spinnerGender.adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genders).apply {
-                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val genderAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genders).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerGender.adapter = genderAdapter
+        // Set selected value after setting adapter
+        args.profileGender?.let { gender ->
+            val index = genders.indexOf(gender)
+            if (index >= 0) {
+                binding.spinnerGender.setSelection(index, false)
             }
-        args.profileGender?.let {
-            val index = genders.indexOf(it)
-            if (index >= 0) binding.spinnerGender.setSelection(index)
         }
     }
 
-    private fun setupSpinners() {
-        lifecycleScope.launch {
-            try {
-                val provinces = addressManager.loadProvinces()
-                val provinceNames = provinces.map { it.name }
+private fun setupSpinners() {
+    lifecycleScope.launch {
+        try {
+            val provinces = addressManager.loadProvinces()
+            val provinceNames = provinces.map { it.name }
 
-                // Setup province spinners
-                val provinceAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, provinceNames).apply {
-                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                }
-                val provinceAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, provinceNames).apply {
-                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                }
-                binding.spinnerProvince1.adapter = provinceAdapter1
-                binding.spinnerProvince2.adapter = provinceAdapter2
-
-                // Set initial values for province 1 (nguyên quán)
-                args.profileProvince1?.let { province1 ->
-                    val index = provinceNames.indexOf(province1)
-                    if (index >= 0) {
-                        binding.spinnerProvince1.setSelection(index)
-                        // Load districts for province 1
-                        val provinceCode = provinces[index].code
-                        val districts = addressManager.getDistricts(provinceCode)
-                        val districtNames = districts.map { it.name }
-                        val districtAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districtNames).apply {
-                            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        }
-                        binding.spinnerDistrict1.adapter = districtAdapter
-
-                        // Set initial value for district 1
-                        args.profileDistrict1?.let { district1 ->
-                            val districtIndex = districtNames.indexOf(district1)
-                            if (districtIndex >= 0) {
-                                binding.spinnerDistrict1.setSelection(districtIndex)
-                                // Load communes for district 1
-                                val districtCode = districts[districtIndex].code
-                                val communes = addressManager.getWards(provinceCode, districtCode)
-                                val communeNames = communes.map { it.name }
-                                val communeAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, communeNames).apply {
-                                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                }
-                                binding.spinnerCommune1.adapter = communeAdapter
-
-                                // Set initial value for commune 1
-                                args.profileCommune1?.let { commune1 ->
-                                    val communeIndex = communeNames.indexOf(commune1)
-                                    if (communeIndex >= 0) {
-                                        binding.spinnerCommune1.setSelection(communeIndex)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Set initial values for province 2 (địa chỉ hiện tại)
-                args.profileProvince2?.let { province2 ->
-                    val index = provinceNames.indexOf(province2)
-                    if (index >= 0) {
-                        binding.spinnerProvince2.setSelection(index)
-                        // Load districts for province 2
-                        val provinceCode = provinces[index].code
-                        val districts = addressManager.getDistricts(provinceCode)
-                        val districtNames = districts.map { it.name }
-                        val districtAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districtNames).apply {
-                            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        }
-                        binding.spinnerDistrict2.adapter = districtAdapter
-
-                        // Set initial value for district 2
-                        args.profileDistrict2?.let { district2 ->
-                            val districtIndex = districtNames.indexOf(district2)
-                            if (districtIndex >= 0) {
-                                binding.spinnerDistrict2.setSelection(districtIndex)
-                                // Load communes for district 2
-                                val districtCode = districts[districtIndex].code
-                                val communes = addressManager.getWards(provinceCode, districtCode)
-                                val communeNames = communes.map { it.name }
-                                val communeAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, communeNames).apply {
-                                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                }
-                                binding.spinnerCommune2.adapter = communeAdapter
-
-                                // Set initial value for commune 2
-                                args.profileCommune2?.let { commune2 ->
-                                    val communeIndex = communeNames.indexOf(commune2)
-                                    if (communeIndex >= 0) {
-                                        binding.spinnerCommune2.setSelection(communeIndex)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Setup listeners for future changes
-                binding.spinnerProvince1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        val provinceCode = provinces[position].code
-                        val districts = addressManager.getDistricts(provinceCode)
-                        val districtAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districts.map { it.name }).apply {
-                            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        }
-                        binding.spinnerDistrict1.adapter = districtAdapter
-
-                        binding.spinnerDistrict1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-                                val districtCode = districts[pos].code
-                                val wards = addressManager.getWards(provinceCode, districtCode)
-                                val wardAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, wards.map { it.name }).apply {
-                                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                }
-                                binding.spinnerCommune1.adapter = wardAdapter
-                            }
-                            override fun onNothingSelected(parent: AdapterView<*>) {}
-                        }
-                    }
-                    override fun onNothingSelected(parent: AdapterView<*>) {}
-                }
-
-                binding.spinnerProvince2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        val provinceCode = provinces[position].code
-                        val districts = addressManager.getDistricts(provinceCode)
-                        val districtAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districts.map { it.name }).apply {
-                            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        }
-                        binding.spinnerDistrict2.adapter = districtAdapter
-
-                        binding.spinnerDistrict2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-                                val districtCode = districts[pos].code
-                                val wards = addressManager.getWards(provinceCode, districtCode)
-                                val wardAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, wards.map { it.name }).apply {
-                                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                }
-                                binding.spinnerCommune2.adapter = wardAdapter
-                            }
-                            override fun onNothingSelected(parent: AdapterView<*>) {}
-                        }
-                    }
-                    override fun onNothingSelected(parent: AdapterView<*>) {}
-                }
-
-            } catch (e: Exception) {
-                Log.e(TAG, "Error loading address data", e)
-                Toast.makeText(context, "Lỗi khi tải địa chỉ", Toast.LENGTH_SHORT).show()
+            // Setup province spinners với adapter
+            val provinceAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, provinceNames).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             }
+            val provinceAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, provinceNames).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            binding.spinnerProvince1.adapter = provinceAdapter1
+            binding.spinnerProvince2.adapter = provinceAdapter2
+
+            // Xử lý địa chỉ nguyên quán (Province 1)
+            args.profileProvince1?.let { province1 ->
+                val provinceIndex = provinceNames.indexOf(province1)
+                if (provinceIndex >= 0) {
+                    binding.spinnerProvince1.setSelection(provinceIndex, false)
+
+                    // Load districts cho province 1
+                    val provinceCode = provinces[provinceIndex].code
+                    val districts = addressManager.getDistricts(provinceCode)
+                    val districtNames = districts.map { it.name }
+                    val districtAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districtNames).apply {
+                        setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    }
+                    binding.spinnerDistrict1.adapter = districtAdapter1
+
+                    // Set giá trị cho district 1
+                    args.profileDistrict1?.let { district1 ->
+                        val districtIndex = districtNames.indexOf(district1)
+                        if (districtIndex >= 0) {
+                            binding.spinnerDistrict1.setSelection(districtIndex, false)
+
+                            // Load communes cho district 1
+                            val districtCode = districts[districtIndex].code
+                            val communes = addressManager.getWards(provinceCode, districtCode)
+                            val communeNames = communes.map { it.name }
+                            val communeAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, communeNames).apply {
+                                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                            }
+                            binding.spinnerCommune1.adapter = communeAdapter1
+
+                            // Set giá trị cho commune 1
+                            args.profileCommune1?.let { commune1 ->
+                                val communeIndex = communeNames.indexOf(commune1)
+                                if (communeIndex >= 0) {
+                                    binding.spinnerCommune1.setSelection(communeIndex, false)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Xử lý địa chỉ hiện tại (Province 2)
+            args.profileProvince2?.let { province2 ->
+                val provinceIndex = provinceNames.indexOf(province2)
+                if (provinceIndex >= 0) {
+                    binding.spinnerProvince2.setSelection(provinceIndex, false)
+
+                    // Load districts cho province 2
+                    val provinceCode = provinces[provinceIndex].code
+                    val districts = addressManager.getDistricts(provinceCode)
+                    val districtNames = districts.map { it.name }
+                    val districtAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districtNames).apply {
+                        setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    }
+                    binding.spinnerDistrict2.adapter = districtAdapter2
+
+                    // Set giá trị cho district 2
+                    args.profileDistrict2?.let { district2 ->
+                        val districtIndex = districtNames.indexOf(district2)
+                        if (districtIndex >= 0) {
+                            binding.spinnerDistrict2.setSelection(districtIndex, false)
+
+                            // Load communes cho district 2
+                            val districtCode = districts[districtIndex].code
+                            val communes = addressManager.getWards(provinceCode, districtCode)
+                            val communeNames = communes.map { it.name }
+                            val communeAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, communeNames).apply {
+                                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                            }
+                            binding.spinnerCommune2.adapter = communeAdapter2
+
+                            // Set giá trị cho commune 2
+                            args.profileCommune2?.let { commune2 ->
+                                val communeIndex = communeNames.indexOf(commune2)
+                                if (communeIndex >= 0) {
+                                    binding.spinnerCommune2.setSelection(communeIndex, false)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Setup listeners cho các thay đổi trong tương lai
+            setupSpinnerListeners(provinces)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading address data", e)
+            Toast.makeText(context, "Lỗi khi tải địa chỉ", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+    // Tách riêng phần setup listeners để code dễ đọc hơn
+    private fun setupSpinnerListeners(provinces: List<Province>) {
+        binding.spinnerProvince1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val provinceCode = provinces[position].code
+                val districts = addressManager.getDistricts(provinceCode)
+                val districtAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districts.map { it.name }).apply {
+                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                }
+                binding.spinnerDistrict1.adapter = districtAdapter
+
+                binding.spinnerDistrict1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                        val districtCode = districts[pos].code
+                        val wards = addressManager.getWards(provinceCode, districtCode)
+                        val wardAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, wards.map { it.name }).apply {
+                            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        }
+                        binding.spinnerCommune1.adapter = wardAdapter
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>) {}
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        binding.spinnerProvince2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val provinceCode = provinces[position].code
+                val districts = addressManager.getDistricts(provinceCode)
+                val districtAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districts.map { it.name }).apply {
+                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                }
+                binding.spinnerDistrict2.adapter = districtAdapter
+
+                binding.spinnerDistrict2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                        val districtCode = districts[pos].code
+                        val wards = addressManager.getWards(provinceCode, districtCode)
+                        val wardAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, wards.map { it.name }).apply {
+                            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        }
+                        binding.spinnerCommune2.adapter = wardAdapter
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>) {}
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
