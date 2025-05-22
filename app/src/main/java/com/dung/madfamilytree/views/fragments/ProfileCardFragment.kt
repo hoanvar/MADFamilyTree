@@ -25,12 +25,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 import SupabaseClientProvider
 import android.app.AlertDialog
+import com.dung.madfamilytree.dtos.Province
+import kotlinx.coroutines.Dispatchers
+import okhttp3.Dispatcher
 
 class ProfileCardFragment : Fragment() {
 
     private var _binding: ProfileCardBinding? = null
     private val binding get() = _binding!!
     private val args: ProfileCardFragmentArgs by navArgs()
+    private val args: com.dung.madfamilytree.views.fragments.ProfileCardFragmentArgs by navArgs()
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val addressManager = AddressManager()
     private val TAG = "ProfileCardFragment"
@@ -52,6 +56,13 @@ class ProfileCardFragment : Fragment() {
         setupSpinners()
         setupSaveButton()
         setupImagePicker()
+        binding.etAgeAtDeath.setText(args.profileAgeAtDied.toString())
+        binding.etDateOfDeath.setText(args.profileTimeDied)
+        binding.etDeathAnniversary.setText(args.profileTimeDiedWas)
+        binding.etBurialInfo.setText(args.profileBurialInfo)
+        if(binding.switchDeceased.isChecked){
+            binding.deceasedInfoLayout.visibility = View.VISIBLE
+        }
 
         //link account
         setupLinkAccountButton()
@@ -339,6 +350,7 @@ class ProfileCardFragment : Fragment() {
         }
     }
 
+    
     private fun setupProfileData() {
         binding.etName.setText(args.profileName)
         binding.etAnotherName.setText(args.profileAnotherName)
@@ -360,21 +372,56 @@ class ProfileCardFragment : Fragment() {
             }
         }
 
+        // Setup marital status spinner
         val maritalStatuses = arrayOf("Độc thân", "Đã kết hôn", "Ly hôn", "Góa")
         binding.spinnerMaritalStatus.adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, maritalStatuses)
         args.profileMaritalStatus?.let {
             val index = maritalStatuses.indexOf(it)
             if (index >= 0) binding.spinnerMaritalStatus.setSelection(index)
+        val maritalStatusAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, maritalStatuses).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerMaritalStatus.adapter = maritalStatusAdapter
+        // Set selected value after setting adapter
+        args.profileMaritalStatus?.let { status ->
+            val index = maritalStatuses.indexOf(status)
+            if (index >= 0) {
+                binding.spinnerMaritalStatus.setSelection(index, false)
+            }
         }
 
+        // Setup education level spinner
         val educationLevels = arrayOf("Tiểu học", "THCS", "THPT", "Đại học", "Thạc sĩ", "Tiến sĩ")
         binding.spinnerEducation.adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, educationLevels)
+        val educationAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, educationLevels).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerEducation.adapter = educationAdapter
+        // Set selected value after setting adapter
+        args.profileEducationalLevel?.let { level ->
+            val index = educationLevels.indexOf(level)
+            if (index >= 0) {
+                binding.spinnerEducation.setSelection(index, false)
+            }
+        }
 
+        // Setup gender spinner
         val genders = arrayOf("Nam", "Nữ", "Khác")
         binding.spinnerGender.adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genders)
+        val genderAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genders).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerGender.adapter = genderAdapter
+        // Set selected value after setting adapter
+        args.profileGender?.let { gender ->
+            val index = genders.indexOf(gender)
+            if (index >= 0) {
+                binding.spinnerGender.setSelection(index, false)
+            }
+        }
     }
 
     private fun setupSpinners() {
@@ -400,12 +447,65 @@ class ProfileCardFragment : Fragment() {
                                 val wards = addressManager.getWards(provinceCode, districtCode)
                                 val wardAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, wards.map { it.name })
                                 binding.spinnerCommune1.adapter = wardAdapter
+private fun setupSpinners() {
+    lifecycleScope.launch {
+        try {
+            val provinces = addressManager.loadProvinces()
+            val provinceNames = provinces.map { it.name }
+
+            // Setup province spinners với adapter
+            val provinceAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, provinceNames).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            val provinceAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, provinceNames).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            binding.spinnerProvince1.adapter = provinceAdapter1
+            binding.spinnerProvince2.adapter = provinceAdapter2
+
+            // Xử lý địa chỉ nguyên quán (Province 1)
+            args.profileProvince1?.let { province1 ->
+                val provinceIndex = provinceNames.indexOf(province1)
+                if (provinceIndex >= 0) {
+                    binding.spinnerProvince1.setSelection(provinceIndex, false)
+
+                    // Load districts cho province 1
+                    val provinceCode = provinces[provinceIndex].code
+                    val districts = addressManager.getDistricts(provinceCode)
+                    val districtNames = districts.map { it.name }
+                    val districtAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districtNames).apply {
+                        setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    }
+                    binding.spinnerDistrict1.adapter = districtAdapter1
+
+                    // Set giá trị cho district 1
+                    args.profileDistrict1?.let { district1 ->
+                        val districtIndex = districtNames.indexOf(district1)
+                        if (districtIndex >= 0) {
+                            binding.spinnerDistrict1.setSelection(districtIndex, false)
+
+                            // Load communes cho district 1
+                            val districtCode = districts[districtIndex].code
+                            val communes = addressManager.getWards(provinceCode, districtCode)
+                            val communeNames = communes.map { it.name }
+                            val communeAdapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, communeNames).apply {
+                                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                            }
+                            binding.spinnerCommune1.adapter = communeAdapter1
+
+                            // Set giá trị cho commune 1
+                            args.profileCommune1?.let { commune1 ->
+                                val communeIndex = communeNames.indexOf(commune1)
+                                if (communeIndex >= 0) {
+                                    binding.spinnerCommune1.setSelection(communeIndex, false)
+                                }
                             }
                             override fun onNothingSelected(parent: AdapterView<*>) {}
                         }
                     }
                     override fun onNothingSelected(parent: AdapterView<*>) {}
                 }
+            }
 
                 binding.spinnerProvince2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -420,17 +520,109 @@ class ProfileCardFragment : Fragment() {
                                 val wards = addressManager.getWards(provinceCode, districtCode)
                                 val wardAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, wards.map { it.name })
                                 binding.spinnerCommune2.adapter = wardAdapter
+            // Xử lý địa chỉ hiện tại (Province 2)
+            args.profileProvince2?.let { province2 ->
+                val provinceIndex = provinceNames.indexOf(province2)
+                if (provinceIndex >= 0) {
+                    binding.spinnerProvince2.setSelection(provinceIndex, false)
+
+                    // Load districts cho province 2
+                    val provinceCode = provinces[provinceIndex].code
+                    val districts = addressManager.getDistricts(provinceCode)
+                    val districtNames = districts.map { it.name }
+                    val districtAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districtNames).apply {
+                        setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    }
+                    binding.spinnerDistrict2.adapter = districtAdapter2
+
+                    // Set giá trị cho district 2
+                    args.profileDistrict2?.let { district2 ->
+                        val districtIndex = districtNames.indexOf(district2)
+                        if (districtIndex >= 0) {
+                            binding.spinnerDistrict2.setSelection(districtIndex, false)
+
+                            // Load communes cho district 2
+                            val districtCode = districts[districtIndex].code
+                            val communes = addressManager.getWards(provinceCode, districtCode)
+                            val communeNames = communes.map { it.name }
+                            val communeAdapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, communeNames).apply {
+                                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                             }
                             override fun onNothingSelected(parent: AdapterView<*>) {}
+                            binding.spinnerCommune2.adapter = communeAdapter2
+
+                            // Set giá trị cho commune 2
+                            args.profileCommune2?.let { commune2 ->
+                                val communeIndex = communeNames.indexOf(commune2)
+                                if (communeIndex >= 0) {
+                                    binding.spinnerCommune2.setSelection(communeIndex, false)
+                                }
+                            }
                         }
+                    }
+                }
+            }
+
+            // Setup listeners cho các thay đổi trong tương lai
+            setupSpinnerListeners(provinces)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading address data", e)
+            Toast.makeText(context, "Lỗi khi tải địa chỉ", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+    // Tách riêng phần setup listeners để code dễ đọc hơn
+    private fun setupSpinnerListeners(provinces: List<Province>) {
+        binding.spinnerProvince1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val provinceCode = provinces[position].code
+                val districts = addressManager.getDistricts(provinceCode)
+                val districtAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districts.map { it.name }).apply {
+                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                }
+                binding.spinnerDistrict1.adapter = districtAdapter
+
+                binding.spinnerDistrict1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                        val districtCode = districts[pos].code
+                        val wards = addressManager.getWards(provinceCode, districtCode)
+                        val wardAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, wards.map { it.name }).apply {
+                            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        }
+                        binding.spinnerCommune1.adapter = wardAdapter
                     }
                     override fun onNothingSelected(parent: AdapterView<*>) {}
                 }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
 
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading address data", e)
                 Toast.makeText(context, "Lỗi khi tải địa chỉ", Toast.LENGTH_SHORT).show()
+        binding.spinnerProvince2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val provinceCode = provinces[position].code
+                val districts = addressManager.getDistricts(provinceCode)
+                val districtAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, districts.map { it.name }).apply {
+                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                }
+                binding.spinnerDistrict2.adapter = districtAdapter
+
+                binding.spinnerDistrict2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                        val districtCode = districts[pos].code
+                        val wards = addressManager.getWards(provinceCode, districtCode)
+                        val wardAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, wards.map { it.name }).apply {
+                            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        }
+                        binding.spinnerCommune2.adapter = wardAdapter
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>) {}
+                }
             }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
@@ -442,6 +634,7 @@ class ProfileCardFragment : Fragment() {
 
     private fun saveProfileData() {
         viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
             try {
                 var avatarUrl = args.profileAvatarUrl
 
@@ -461,6 +654,9 @@ class ProfileCardFragment : Fragment() {
                     name = binding.etName.text.toString(),
                     another_name = binding.etAnotherName.text.toString(),
                     date_of_birth = parseDate(binding.etDateOfBirth.text.toString()),
+                    gender = binding.spinnerGender.selectedItem?.toString() ?: "",
+                    educational_level = binding.spinnerEducation.selectedItem?.toString()?: "",
+                    marital_status = binding.spinnerMaritalStatus.selectedItem?.toString()?: "",
                     phone_number = binding.etPhoneNumber.text.toString(),
                     job = binding.etJob.text.toString(),
                     province1 = binding.spinnerProvince1.selectedItem?.toString() ?: "",
@@ -472,6 +668,7 @@ class ProfileCardFragment : Fragment() {
                     died = if (binding.switchDeceased.isChecked) 1 else 0,
                     date_of_death = parseDate(binding.etDateOfDeath.text.toString()),
 //                    death_anniversary = binding.etDeathAnniversary.text.toString(),
+                    death_anniversary = parseDate(binding.etDeathAnniversary.text.toString()),
                     age_at_death = binding.etAgeAtDeath.text.toString().toIntOrNull(),
                     burial_info = binding.etBurialInfo.text.toString(),
                     biography = binding.tvBiography.text.toString(),
@@ -489,6 +686,10 @@ class ProfileCardFragment : Fragment() {
                         Log.e(TAG, "Lỗi khi lưu", e)
                         Toast.makeText(context, "Không thể lưu thông tin", Toast.LENGTH_SHORT).show()
                     }
+//                    ?.addOnFailureListener { e ->
+//                        Log.e(TAG, "Lỗi khi lưu", e)
+//                        Toast.makeText(context, "Không thể lưu thông tin", Toast.LENGTH_SHORT).show()
+//                    }
 
             } catch (e: Exception) {
                 Log.e(TAG, "Lỗi không xác định", e)
@@ -499,8 +700,14 @@ class ProfileCardFragment : Fragment() {
 
     private fun parseDate(dateStr: String): Timestamp? {
         return try {
+            if (dateStr.isBlank()) return null
             val date = dateFormat.parse(dateStr)
             Timestamp(date ?: Date())
+            if (date != null) {
+                Timestamp(date)
+            } else {
+                null
+            }
         } catch (e: Exception) {
             null
         }

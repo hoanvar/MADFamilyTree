@@ -81,7 +81,7 @@ class AlbumDetailActivity : BaseActivity() {
                     viewModel.recycleMode.postValue(SelectMode.ONE)
                 }
 
-                Utility.deleteImageList(AlbumImageItemAdapter.AlbumImageItemViewHolder.getSelectedImageList())
+                Utility.deleteImageList(AlbumImageItemAdapter.AlbumImageItemViewHolder.getSelectedImageList(),{})
                 viewModel.getAlbumImage()
             }
         }
@@ -151,7 +151,8 @@ class AlbumDetailActivity : BaseActivity() {
 
     override fun onRestart() {
         super.onRestart()
-
+        viewModel.getAlbumInfo()
+        viewModel.getAlbumImage()
 
     }
 }

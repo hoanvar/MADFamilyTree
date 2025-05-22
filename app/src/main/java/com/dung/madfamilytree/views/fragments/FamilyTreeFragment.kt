@@ -86,16 +86,74 @@ class FamilyTreeFragment : Fragment() {
                 depthAdapter = DepthAdapter(depthList, selectedDepth) { index ->
                     selectedDepth = index
                     depthAdapter.notifyDataSetChanged()
-                    profileAdapter = ProfileAdapter(profilesByDepth[index] ?: emptyList()) { node ->
-                        showAddRelationshipDialog(node.profileId, node.profile?.name ?: "")
-                    }
+                    profileAdapter = ProfileAdapter(
+                        profilesByDepth[index] ?: emptyList(),
+                        { node -> showAddRelationshipDialog(node.profileId, node.profile?.name ?: "") },
+                        { node ->
+                            // Navigate to profile card with the selected profile
+                            val action = FamilyTreeFragmentDirections.actionFamilyTreeFragmentToProfileCardFragment(
+                                profileId = node.profileId,
+                                profileName = node.profile?.name ?: "",
+                                profileAnotherName = node.profile?.another_name ?: "",
+                                profileGender = node.profile?.gender ?: "",
+                                profileDateOfBirth = node.profile?.date_of_birth?.toDate()?.let { dateFormat.format(it) } ?: "",
+                                profilePhoneNumber = node.profile?.phone_number ?: "",
+                                profileMaritalStatus = node.profile?.marital_status ?: "",
+                                profileEducationalLevel = node.profile?.educational_level ?: "",
+                                profileJob = node.profile?.job ?: "",
+                                profileProvince1 = node.profile?.province1 ?: "",
+                                profileDistrict1 = node.profile?.district1 ?: "",
+                                profileCommune1 = node.profile?.commune1 ?: "",
+                                profileProvince2 = node.profile?.province2 ?: "",
+                                profileDistrict2 = node.profile?.district2 ?: "",
+                                profileCommune2 = node.profile?.commune2 ?: "",
+                                profileDied = node.profile?.died ?: 0,
+                                profileBiography = node.profile?.biography ?: "",
+                                profileAvatarUrl = node.profile?.avatar_url ?: "",
+                                profileTimeDied = node.profile?.death_anniversary?.toDate()?.let { dateFormat.format(it) } ?: "",
+                                profileTimeDiedWas = node.profile?.date_of_death?.toDate()?.let { dateFormat.format(it) } ?: "",
+                                profileAgeAtDied = node.profile?.age_at_death ?: 0,
+                                profileBurialInfo = node.profile?.burial_info ?: ""
+                            )
+                            findNavController().navigate(action)
+                        }
+                    )
                     binding.recycleViewProfiles.adapter = profileAdapter
                 }
                 binding.recycleViewDoi.adapter = depthAdapter
 
-                profileAdapter = ProfileAdapter(profilesByDepth[selectedDepth] ?: emptyList()) { node ->
-                    showAddRelationshipDialog(node.profileId, node.profile?.name ?: "")
-                }
+                profileAdapter = ProfileAdapter(
+                    profilesByDepth[selectedDepth] ?: emptyList(),
+                    { node -> showAddRelationshipDialog(node.profileId, node.profile?.name ?: "") },
+                    { node ->
+                        // Navigate to profile card with the selected profile
+                        val action = FamilyTreeFragmentDirections.actionFamilyTreeFragmentToProfileCardFragment(
+                            profileId = node.profileId,
+                            profileName = node.profile?.name ?: "",
+                            profileAnotherName = node.profile?.another_name ?: "",
+                            profileGender = node.profile?.gender ?: "",
+                            profileDateOfBirth = node.profile?.date_of_birth?.toDate()?.let { dateFormat.format(it) } ?: "",
+                            profilePhoneNumber = node.profile?.phone_number ?: "",
+                            profileMaritalStatus = node.profile?.marital_status ?: "",
+                            profileEducationalLevel = node.profile?.educational_level ?: "",
+                            profileJob = node.profile?.job ?: "",
+                            profileProvince1 = node.profile?.province1 ?: "",
+                            profileDistrict1 = node.profile?.district1 ?: "",
+                            profileCommune1 = node.profile?.commune1 ?: "",
+                            profileProvince2 = node.profile?.province2 ?: "",
+                            profileDistrict2 = node.profile?.district2 ?: "",
+                            profileCommune2 = node.profile?.commune2 ?: "",
+                            profileDied = node.profile?.died ?: 0,
+                            profileBiography = node.profile?.biography ?: "",
+                            profileAvatarUrl = node.profile?.avatar_url ?: "",
+                            profileTimeDied = node.profile?.death_anniversary?.toDate()?.let { dateFormat.format(it) } ?: "",
+                            profileTimeDiedWas = node.profile?.date_of_death?.toDate()?.let { dateFormat.format(it) } ?: "",
+                            profileAgeAtDied = node.profile?.age_at_death ?: 0,
+                            profileBurialInfo = node.profile?.burial_info ?: ""
+                        )
+                        findNavController().navigate(action)
+                    }
+                )
                 binding.recycleViewProfiles.adapter = profileAdapter
 
             } catch (e: Exception) {

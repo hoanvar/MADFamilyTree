@@ -111,7 +111,11 @@ class TreeFragment : Fragment() {
                 profileCommune2 = node.profile?.commune2 ?: "",
                 profileDied = node.profile?.died ?: 0,
                 profileBiography = node.profile?.biography ?: "",
-                profileAvatarUrl = node.profile?.avatar_url ?: ""
+                profileAvatarUrl = node.profile?.avatar_url ?: "",
+                profileTimeDied = node.profile?.death_anniversary?.toDate()?.let { dateFormat.format(it) } ?: "",
+                profileTimeDiedWas = node.profile?.date_of_death?.toDate()?.let { dateFormat.format(it) } ?: "",
+                profileAgeAtDied = node.profile?.age_at_death ?: 0,
+                profileBurialInfo = node.profile?.burial_info ?: ""
             )
             findNavController().navigate(action)
         }
@@ -338,9 +342,9 @@ class TreeFragment : Fragment() {
         }
 
         // Setup avatar selection
-        dialogView.findViewById<Button>(R.id.btn_add_avatar).setOnClickListener {
-            pickImage.launch("image/*")
-        }
+//        dialogView.findViewById<Button>(R.id.btn_add_avatar).setOnClickListener {
+//            pickImage.launch("image/*")
+//        }
 
         // Set up save button
         dialogView.findViewById<Button>(R.id.btn_save).setOnClickListener {
