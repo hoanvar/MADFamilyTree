@@ -90,8 +90,9 @@ class ImageDetailActivity : BaseActivity() {
                 popupWindow.dismiss()
                 lifecycleScope.launch(Dispatchers.IO)
                 {
-                    Utility.deleteImageList(listOf(ImageDTO(url = imageUrl)))
-                    finish()
+                    Utility.deleteImageList(listOf(ImageDTO(url = imageUrl))) {
+                        finish()
+                    }
                 }
             }
         }

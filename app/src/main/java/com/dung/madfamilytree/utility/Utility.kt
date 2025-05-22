@@ -81,7 +81,7 @@ object Utility {
         }
     }
 
-    suspend fun deleteImageList(imageList: List<ImageDTO>) {
+    suspend fun deleteImageList(imageList: List<ImageDTO>,successListener:()->Unit) {
         for (image in imageList) {
             SupabaseClientProvider.deleteImage(image)
         }
@@ -101,6 +101,7 @@ object Utility {
                                 cont.resume(null)
                             }
                         }
+                        successListener()
                     }
             }
         }
