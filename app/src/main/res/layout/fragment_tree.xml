@@ -23,22 +23,24 @@
             android:layout_width="30dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
             android:background="@android:color/transparent"
             android:src="@drawable/back_icon" />
 
         <Button
             android:id="@+id/btn_family_tree"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:fontFamily="@font/poppins_bold"
             android:text="Cây gia phả"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_marginRight="5dp"
+            />
 
         <Button
             android:id="@+id/btn_find"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="Tìm kiếm"
             android:textSize="20sp" />
     </LinearLayout>

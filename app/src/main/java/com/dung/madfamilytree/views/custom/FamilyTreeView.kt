@@ -169,8 +169,10 @@ class FamilyTreeView @JvmOverloads constructor(
             else R.drawable.family_node_background_female
         )
         pairView.findViewById<TextView>(R.id.male_node_name).text = node.profile?.name ?: "Unknown"
-        pairView.findViewById<TextView>(R.id.male_node_dates).text = node.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_"
-        
+        pairView.findViewById<TextView>(R.id.male_node_dates).text = node.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_/_"
+        pairView.findViewById<TextView>(R.id.male_node_die).text = node.profile?.date_of_death?.let { formatTimestamp(it) } ?: "_/_/_"
+
+
         // Thêm click listener cho node chính
         maleNodeContainer.setOnClickListener {
             onNodeClickListener?.invoke(node)
@@ -184,8 +186,9 @@ class FamilyTreeView @JvmOverloads constructor(
                 else R.drawable.family_node_background_female
             )
             pairView.findViewById<TextView>(R.id.female_node_name).text = node.partner.profile?.name ?: "Unknown"
-            pairView.findViewById<TextView>(R.id.female_node_dates).text = node.partner.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_"
-            
+            pairView.findViewById<TextView>(R.id.female_node_dates).text = node.partner.profile?.date_of_birth?.let { formatTimestamp(it) } ?: "_/_/_"
+            pairView.findViewById<TextView>(R.id.female_node_die).text = node.partner?.profile?.date_of_death?.let { formatTimestamp(it) } ?: "_/_/_"
+
             // Thêm click listener cho partner node
             femaleNodeContainer.setOnClickListener {
                 onNodeClickListener?.invoke(node.partner)

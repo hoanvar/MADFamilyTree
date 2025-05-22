@@ -45,9 +45,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="3dp"
                 android:fontFamily="@font/poppins_bold"
-                android:text="12/12/1980 - _/_"
+                android:text="12/12/1980"
+                android:textColor="@color/black"
+                android:textSize="5sp" />
+
+            <!-- Thêm TextView cho ngày mất -->
+            <TextView
+                android:id="@+id/male_node_die"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="@font/poppins_bold"
+                android:text="_/_/_"
                 android:textColor="@color/black"
                 android:textSize="5sp" />
         </LinearLayout>
@@ -88,9 +100,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="3dp"
                 android:fontFamily="@font/poppins_bold"
-                android:text="12/12/1980 - _/_"
+                android:text="12/12/1980"
+                android:textColor="@color/black"
+                android:textSize="5sp" />
+
+            <!-- Thêm TextView cho ngày mất -->
+            <TextView
+                android:id="@+id/female_node_die"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="@font/poppins_bold"
+                android:text="_/_/_"
                 android:textColor="@color/black"
                 android:textSize="5sp" />
         </LinearLayout>

@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:text="Giới tính"
                 android:fontFamily="@font/poppins_semibold"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textColor="@color/white"
                  />
 
@@ -65,15 +65,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tuổi"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:fontFamily="@font/poppins_semibold"
                 android:textColor="@color/white"
                 />
             <Button
                 android:id="@+id/btn_add_new"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/add_new"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/add_btn"
                 android:fontFamily="@font/poppins_semibold"
                 android:textSize="20sp"
                 android:textColor="@color/white"
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:text="Số con"
                 android:fontFamily="@font/poppins_semibold"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textColor="@color/white"/>
 
             <TextView
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:text="Trạng thái"
                 android:fontFamily="@font/poppins_semibold"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textColor="@color/white"/>
             <ImageView
                 android:id="@+id/imageView8"
