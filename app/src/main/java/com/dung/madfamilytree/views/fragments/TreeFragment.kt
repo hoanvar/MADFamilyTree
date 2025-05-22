@@ -1,6 +1,8 @@
 package com.dung.madfamilytree.views.fragments
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,12 +11,15 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.dung.madfamilytree.R
 import com.dung.madfamilytree.databinding.FragmentTreeBinding
 import com.dung.madfamilytree.dtos.NodeDTO
@@ -37,6 +42,20 @@ class TreeFragment : Fragment() {
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private var _binding: FragmentTreeBinding? = null
     private val binding get() = _binding!!
+    private var selectedAvatarUri: Uri? = null
+    private lateinit var currentDialog: AlertDialog
+    private lateinit var currentDialogView: View
+
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            selectedAvatarUri = it
+            val avatarImageView = currentDialogView.findViewById<ImageView>(R.id.profile_avatar)
+            Glide.with(requireContext())
+                .load(uri)
+                .placeholder(R.drawable.profile_icon)
+                .into(avatarImageView)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +109,9 @@ class TreeFragment : Fragment() {
                 profileProvince2 = node.profile?.province2 ?: "",
                 profileDistrict2 = node.profile?.district2 ?: "",
                 profileCommune2 = node.profile?.commune2 ?: "",
-                profileDied = node.profile?.died ?: 0
+                profileDied = node.profile?.died ?: 0,
+                profileBiography = node.profile?.biography ?: "",
+                profileAvatarUrl = node.profile?.avatar_url ?: ""
             )
             findNavController().navigate(action)
         }
@@ -199,6 +220,8 @@ class TreeFragment : Fragment() {
 
             // Create new profile
             val profileId = UUID.randomUUID().toString()
+            var avatarUrl: String? = null
+
             val profile = ProfileDTO(
                 id = profileId,
                 name = name,
@@ -215,7 +238,8 @@ class TreeFragment : Fragment() {
                 province2 = dialogView.findViewById<EditText>(R.id.et_province2).text.toString(),
                 district2 = dialogView.findViewById<EditText>(R.id.et_district2).text.toString(),
                 commune2 = dialogView.findViewById<EditText>(R.id.et_commune2).text.toString(),
-                died = 0
+                died = 0,
+                avatar_url = avatarUrl
             )
 
             // Save profile and update node
@@ -226,6 +250,11 @@ class TreeFragment : Fragment() {
                         ?.document(profileId)
                         ?.set(profile)
                         ?.await()
+                    var avatarUrl: String? = null
+                    selectedAvatarUri?.let { uri ->
+                        avatarUrl = SupabaseClientProvider.uploadImageFromUri(requireContext(), uri)
+                        profile.avatar_url = avatarUrl
+                    }
 
                     // Update node with partner
                     val nodeRef = Utility.db?.collection("Node")
@@ -260,6 +289,7 @@ class TreeFragment : Fragment() {
         dialog.show()
     }
 
+    @SuppressLint("MissingInflatedId")
     private fun showAddChildDialog(node: TreeNode) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_partner, null)
         val dialog = AlertDialog.Builder(requireContext())
@@ -307,6 +337,11 @@ class TreeFragment : Fragment() {
             ).show()
         }
 
+        // Setup avatar selection
+        dialogView.findViewById<Button>(R.id.btn_add_avatar).setOnClickListener {
+            pickImage.launch("image/*")
+        }
+
         // Set up save button
         dialogView.findViewById<Button>(R.id.btn_save).setOnClickListener {
             val name = dialogView.findViewById<EditText>(R.id.et_name)?.text?.toString() ?: ""
@@ -337,6 +372,7 @@ class TreeFragment : Fragment() {
             val province2 = dialogView.findViewById<EditText>(R.id.et_province2)?.text?.toString() ?: ""
             val district2 = dialogView.findViewById<EditText>(R.id.et_district2)?.text?.toString() ?: ""
             val commune2 = dialogView.findViewById<EditText>(R.id.et_commune2)?.text?.toString() ?: ""
+            var avatarUrl: String? = null
 
             val profile = ProfileDTO(
                 id = profileId,
@@ -354,7 +390,8 @@ class TreeFragment : Fragment() {
                 province2 = province2,
                 district2 = district2,
                 commune2 = commune2,
-                died = 0
+                died = 0,
+                avatar_url = avatarUrl
             )
             Log.d(TAG, "Profile object created: $profile")
 
@@ -379,7 +416,13 @@ class TreeFragment : Fragment() {
                         ?.document(profileId)
                         ?.set(profile)
                         ?.await()
+                    var avatarUrl: String? = null
+                    selectedAvatarUri?.let { uri ->
+                        avatarUrl = SupabaseClientProvider.uploadImageFromUri(requireContext(), uri)
+                        profile.avatar_url = avatarUrl
+                    }
                     Log.d(TAG, "Profile saved successfully to Firestore")
+
 
                     Log.d(TAG, "Starting to save node to Firestore...")
                     // Save node to Firestore

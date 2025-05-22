@@ -165,18 +165,19 @@ class FamilyTreeFragment : Fragment() {
                         id = newProfileId,
                         name = dialogBinding.etName.text.toString(),
                         another_name = dialogBinding.etAnotherName.text.toString(),
-                        gender = dialogBinding.etGender.text.toString(),
+                        gender = dialogBinding.spinnerGender.selectedItem?.toString() ?: "",
                         date_of_birth = dateOfBirth,
                         phone_number = dialogBinding.etPhoneNumber.text.toString(),
                         marital_status = dialogBinding.spinnerMaritalStatus.selectedItem.toString(),
-                        educational_level = dialogBinding.etEducationalLevel.text.toString(),
+                        educational_level = dialogBinding.spinnerEducation.selectedItem?.toString() ?: "",
                         job = dialogBinding.etJob.text.toString(),
-                        province1 = dialogBinding.etProvince1.text.toString(),
-                        district1 = dialogBinding.etDistrict1.text.toString(),
-                        commune1 = dialogBinding.etCommune1.text.toString(),
-                        province2 = dialogBinding.etProvince2.text.toString(),
-                        district2 = dialogBinding.etDistrict2.text.toString(),
-                        commune2 = dialogBinding.etCommune2.text.toString()
+                        province1 = dialogBinding.spinnerProvince1.selectedItem?.toString() ?: "",
+                        district1 = dialogBinding.spinnerDistrict1.selectedItem?.toString() ?: "",
+                        commune1 = dialogBinding.spinnerCommune1.selectedItem?.toString() ?: "",
+                        province2 = dialogBinding.spinnerProvince2.selectedItem?.toString() ?: "",
+                        district2 = dialogBinding.spinnerDistrict2.selectedItem?.toString() ?: "",
+                        commune2 = dialogBinding.spinnerCommune2.selectedItem?.toString() ?: "",
+
                     )
 
                     // Save new profile to Firestore

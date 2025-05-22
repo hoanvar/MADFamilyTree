@@ -29,6 +29,9 @@
             android:name=".views.activities.CreateNewAlbumActivity"
             android:exported="false" />
         <activity
+            android:name=".views.activities.CreateEventActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.activities.HomeActivity"
             android:exported="false" />
         <activity
@@ -46,6 +49,9 @@
             android:exported="false" />
         <activity
             android:name=".views.activities.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.activities.EditBiographyActivity"
             android:exported="false" />
         <activity
             android:name=".views.activities.MainActivity"

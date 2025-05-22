@@ -1,254 +1,508 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <ImageView
-            android:id="@+id/profile_avatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/app_icon"
-            android:contentDescription="Ảnh đại diện"
-            android:scaleType="centerCrop"
-            android:src="@drawable/default_icon_img" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thông tin hiển thị trên: Gia phả"
+            android:text="Hồ sơ"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginTop="8dp" />
+            android:layout_gravity="center" />
+    </androidx.appcompat.widget.Toolbar>
 
-        <EditText
-            android:id="@+id/et_name_gia_pha"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Ông cụ" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Họ và tên:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Đỗ Văn A"
-            android:minHeight="48dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tên khác:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_another_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text=""
-            android:minHeight="48dp" />
+                <ImageView
+                    android:id="@+id/profile_avatar"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@android:color/darker_gray"
+                    android:scaleType="centerCrop" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Giới tính:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Nam"
-            android:minHeight="48dp" />
+                <Button
+                    android:id="@+id/btn_add_avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Thêm avatar" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ngày tháng năm sinh:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_date_of_birth"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="01/01/1970"
-            android:minHeight="48dp" />
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Số điện thoại:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_phone_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="0123456789"
-            android:minHeight="48dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thông tin hiển thị trên: Gia phả"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tình trạng hôn nhân:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <Spinner
-            android:id="@+id/spinner_marital_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp" />
+            <EditText
+                android:id="@+id/et_name_gia_pha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_background"
+                android:padding="8dp"
+                android:text="Ông cụ" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Trình độ học vấn:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_educational_level"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Đại học"
-            android:minHeight="48dp" />
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Họ và tên:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+            <!--            <EditText-->
+            <!--                android:id="@+id/et_name"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:background="@drawable/edit_text_background"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:text="Đỗ Văn A"-->
+            <!--                android:minHeight="48dp" />-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nghề nghiệp:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_job"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Nông dân"
-            android:minHeight="48dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Họ tên:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nguyên quán:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_province1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Quảng Nam"
-            android:minHeight="48dp" />
-        <EditText
-            android:id="@+id/et_district1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Thăng Bình"
-            android:minHeight="48dp" />
-        <EditText
-            android:id="@+id/et_commune1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Bình Định"
-            android:minHeight="48dp" />
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Nhập họ tên"
+                android:inputType="textPersonName" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Địa chỉ hiện tại:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_province2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Quảng Ngãi"
-            android:minHeight="48dp" />
-        <EditText
-            android:id="@+id/et_district2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Quảng Duy"
-            android:minHeight="48dp" />
-        <EditText
-            android:id="@+id/et_commune2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edit_text_background"
-            android:padding="8dp"
-            android:text="Quảng Minh"
-            android:minHeight="48dp" />
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Tên khác:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+            <!--            <EditText-->
+            <!--                android:id="@+id/et_another_name"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginBottom="8dp"-->
+            <!--                android:background="@drawable/edit_text_background"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:text=""-->
+            <!--                android:minHeight="48dp" />-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tiểu sử:"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-        <TextView
-            android:id="@+id/tv_biography"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@null"
-            android:padding="2dp"
-            android:text="Soạn thảo"
-            android:minHeight="48dp"
-            android:paddingVertical="12dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tên khác:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Lưu" />
+            <EditText
+                android:id="@+id/et_another_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Nhập tên khác"
+                android:inputType="textPersonName" />
 
-    </LinearLayout>
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Giới tính:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+            <!--            <EditText-->
+            <!--                android:id="@+id/et_gender"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginBottom="8dp"-->
+            <!--                android:background="@drawable/edit_text_background"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:text="Nam"-->
+            <!--                android:minHeight="48dp" />-->
 
-</ScrollView> 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Giới tính:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Tình trạng hôn nhân:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+            <!--            <Spinner-->
+            <!--                android:id="@+id/spinner_marital_status"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:minHeight="48dp"-->
+            <!--                android:background="@drawable/edit_text_background"-->
+            <!--                android:padding="8dp" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tình trạng hôn nhân:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_marital_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Trình độ học vấn:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+            <!--            <EditText-->
+            <!--                android:id="@+id/et_educational_level"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginBottom="8dp"-->
+            <!--                android:background="@drawable/edit_text_background"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:text="Đại học"-->
+            <!--                android:minHeight="48dp" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Trình độ học vấn:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_education"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Nghề nghiệp:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+            <!--            <EditText-->
+            <!--                android:id="@+id/et_job"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginBottom="8dp"-->
+            <!--                android:background="@drawable/edit_text_background"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:text="Nông dân"-->
+            <!--                android:minHeight="48dp" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Nghề nghiệp:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_job"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Nhập nghề nghiệp"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ngày tháng năm sinh:"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/et_date_of_birth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/edit_text_background"
+                android:padding="8dp"
+                android:text="01/01/1970"
+                android:minHeight="48dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Số điện thoại:"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/et_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/edit_text_background"
+                android:padding="8dp"
+                android:text="0123456789"
+                android:minHeight="48dp" />
+
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Nguyên quán:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Nguyên quán:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_province1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <Spinner
+                android:id="@+id/spinner_district1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <Spinner
+                android:id="@+id/spinner_commune1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Địa chỉ hiện tại:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Địa chỉ hiện tại:"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            <Spinner
+                android:id="@+id/spinner_province2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <Spinner
+                android:id="@+id/spinner_district2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <Spinner
+                android:id="@+id/spinner_commune2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Tiểu sử:"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textStyle="bold" />-->
+            <!--            <TextView-->
+            <!--                android:id="@+id/tv_biography"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginBottom="16dp"-->
+            <!--                android:background="@null"-->
+            <!--                android:padding="2dp"-->
+            <!--                android:text="Soạn thảo"-->
+            <!--                android:minHeight="48dp"-->
+            <!--                android:paddingVertical="12dp" />-->
+
+            <!--            <Button-->
+            <!--                android:id="@+id/btn_save"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="16dp"-->
+            <!--                android:text="Lưu" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tiểu sử:"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_edit_biography"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Soạn thảo" />
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_biography"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Chưa có tiểu sử"
+                android:minHeight="100dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Đã mất:"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Switch
+                    android:id="@+id/switch_deceased"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/deceased_info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ngày mất:" />
+
+                <EditText
+                    android:id="@+id/et_date_of_death"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Nhập ngày mất"
+                    android:inputType="date" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Ngày giỗ (âm lịch):" />
+
+                <EditText
+                    android:id="@+id/et_death_anniversary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Nhập ngày giỗ"
+                    android:inputType="date" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Hưởng thọ:" />
+
+                <EditText
+                    android:id="@+id/et_age_at_death"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Nhập tuổi khi mất"
+                    android:inputType="number" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Mộ táng:" />
+
+                <EditText
+                    android:id="@+id/et_burial_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Nhập thông tin mộ táng"
+                    android:inputType="textMultiLine"
+                    android:minLines="2" />
+
+            </LinearLayout>
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Lưu thông tin" />
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

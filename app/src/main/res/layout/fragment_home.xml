@@ -45,7 +45,7 @@
         app:shapeAppearanceOverlay="@style/roundImageView" />
 
     <com.dung.madfamilytree.views.customviews.CustomImageButton
-        android:id="@+id/notification_btn"
+        android:id="@+id/btn_notification"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/round_input_shape"

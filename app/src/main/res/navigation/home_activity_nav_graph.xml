@@ -91,6 +91,11 @@
             android:id="@+id/action_tree_to_familyTreeFragment"
             app:destination="@id/familyTreeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.dung.madfamilytree.views.fragments.NotificationFragment"
+        android:label="Thông báo"
+        tools:layout="@layout/fragment_notification" />
 
     <fragment
         android:id="@+id/profileCardFragment"
@@ -145,6 +150,14 @@
         <argument
             android:name="profileDied"
             app:argType="integer" />
+        <argument
+            android:name="profileBiography"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="profileAvatarUrl"
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
 
 </navigation>

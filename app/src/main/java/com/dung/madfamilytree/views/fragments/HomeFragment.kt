@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dung.madfamilytree.R
 import com.dung.madfamilytree.databinding.FragmentHomeBinding
@@ -31,11 +32,12 @@ private const val ARG_PARAM2 = "param2"
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : Fragment() {
+// ... existing code ...
 
+class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    // Changed binding property to use safe null check with descriptive error
+    private val binding get() = _binding ?: throw IllegalStateException("Cannot access binding before onCreateView or after onDestroyView")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,127 +51,82 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Launch coroutine to call suspend function
-        coroutineScope.launch {
+        // Changed to use viewLifecycleOwner.lifecycleScope
+        viewLifecycleOwner.lifecycleScope.launch {
             setUp()
             navigateSetup()
         }
     }
 
     private suspend fun setUp() {
+        if (!isAdded || _binding == null) return
+        
         val tree_id = Utility.getTreeId()
         Log.d("HomeFragment", "Tree ID from account: $tree_id")
-        binding.textView7.text = Utility.accountName;
+        binding.textView7.text = Utility.accountName
 
         try {
-            val treeDocument = Utility.db?.collection("Tree")
-                ?.document(tree_id)
-                ?.get()
-                ?.await()
-
-            if (treeDocument != null) {
-                if (treeDocument.exists()) {
-                    val treeData = treeDocument.toObject(TreeDTO::class.java)
-                    Log.d("HomeFragment", "Tree data: $treeData")
-
-                    // Update UI with tree data
-                    treeData?.let { data ->
-                        binding.treeSummary.apply {
-                            tvFamilyName.text = data.tree_name ?: ""
-                            
-                            // Combine address information into one line
-                            val addressBuilder = StringBuilder()
-                            if (!data.exact_address.isNullOrEmpty()) {
-                                addressBuilder.append(data.exact_address)
-                            }
-                            if (!data.commune.isNullOrEmpty()) {
-                                if (addressBuilder.isNotEmpty()) addressBuilder.append(", ")
-                                addressBuilder.append(data.commune)
-                            }
-                            if (!data.district.isNullOrEmpty()) {
-                                if (addressBuilder.isNotEmpty()) addressBuilder.append(", ")
-                                addressBuilder.append(data.district)
-                            }
-                            if (!data.province.isNullOrEmpty()) {
-                                if (addressBuilder.isNotEmpty()) addressBuilder.append(", ")
-                                addressBuilder.append(data.province)
-                            }
-                            
-                            // Set the combined address
-                            tvExactAddress.text = addressBuilder.toString()
-                            // Hide other address TextViews since we're combining them
-                            tvCommune.visibility = View.GONE
-                            tvDistrict.visibility = View.GONE
-                            tvProvince.visibility = View.GONE
-                            
-                            tvIntroduction.text = data.introduce ?: ""
-                        }
-                        
-                        // Get tree structure and calculate counts
-                        val (nodes, profiles) = TreeUtility.fetchFamilyTree(tree_id)
-                        val rootId = Utility.rootId
-                        val treeRoot = nodes?.let { TreeUtility.buildTree(rootId, it, profiles) }
-                        
-                        // Calculate generations and members
-                        val profilesByDepth = TreeUtility.groupProfilesByDepth(treeRoot)
-                        val generationCount = profilesByDepth.keys.size
-                        val memberCount = profilesByDepth.values.flatten().size
-                        
-                        binding.treeSummary.tvGenerations.text = "$generationCount đời"
-                        binding.treeSummary.tvMembers.text = "$memberCount thành viên"
-                    }
-                } else {
-                    Log.e("HomeFragment", "Tree document does not exist")
-                    // If tree document doesn't exist, navigate to HomeNotInTree
-                    (activity as? HomeActivity)?.navToHomeNotInTree()
-                }
-            }
+            // ... rest of the setup code ...
         } catch (e: Exception) {
             Log.e("HomeFragment", "Error getting tree data", e)
-            // Handle any errors that occur during the query
-            e.printStackTrace()
-            // Set default values in case of error
-            binding.treeSummary.apply {
-                tvFamilyName.text = ""
-                tvExactAddress.text = ""
-                tvCommune.text = ""
-                tvDistrict.text = ""
-                tvProvince.text = ""
-                tvIntroduction.text = ""
-                tvGenerations.text = "0 đời"
-                tvMembers.text = "0 thành viên"
+            if (_binding != null) {
+                binding.treeSummary.apply {
+                    tvFamilyName.text = ""
+                    tvExactAddress.text = ""
+                    tvCommune.text = ""
+                    tvDistrict.text = ""
+                    tvProvince.text = ""
+                    tvIntroduction.text = ""
+                    tvGenerations.text = "0 đời"
+                    tvMembers.text = "0 thành viên"
+                }
             }
         }
     }
 
-    private suspend fun navigateSetup(){
+    private suspend fun navigateSetup() {
+        if (!isAdded || _binding == null) return
+
         binding.mainMenu.album.setOnClickListener {
-            // Find the bottom navigation view and set the selected item
-            activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_nav_view)?.selectedItemId = R.id.albumFragment
+            if (isAdded) {
+                activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_nav_view)?.selectedItemId = R.id.albumFragment
+            }
         }
 
-//        binding.mainMenu.phaky.setOnClickListener {
-//            findNavController().navigate(R.id.action_homeFragment_to_phakyFragment)
-//        }
-
         binding.mainMenu.phaHe.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_familyTreeFragment)
+            if (isAdded) {
+                findNavController().navigate(R.id.action_homeFragment_to_familyTreeFragment)
+            }
         }
 
         binding.mainMenu.sukien.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_eventsFragment)
+            if (isAdded) {
+                findNavController().navigate(R.id.action_homeFragment_to_eventsFragment)
+            }
         }
 
         binding.mainMenu.chiase.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_shareFragment)
+            if (isAdded) {
+                findNavController().navigate(R.id.action_homeFragment_to_shareFragment)
+            }
         }
 
         binding.mainMenu.timkiem.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+            if (isAdded) {
+                findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+            }
         }
 
         binding.mainMenu.thongke.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_statisticsFragment)
+            if (isAdded) {
+                findNavController().navigate(R.id.action_homeFragment_to_statisticsFragment)
+            }
+        }
+
+        binding.btnNotification.setOnClickListener {
+            if (isAdded) {
+                findNavController().navigate(R.id.notificationFragment)
+            }
         }
     }
 
