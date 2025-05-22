@@ -53,6 +53,10 @@
         <action
             android:id="@+id/action_familyTreeFragment_to_tree"
             app:destination="@id/tree" />
+        <action
+            android:id="@+id/actionFamilyTreeFragmentToProfileCardFragment"
+            app:destination="@id/profileCardFragment"
+            />
     </fragment>
 
     <fragment
@@ -158,6 +162,24 @@
             android:name="profileAvatarUrl"
             app:argType="string"
             android:defaultValue="" />
+        <argument
+            android:name="profileAgeAtDied"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="profileTimeDied"
+            app:argType="string"
+            />
+        <argument
+            android:name="profileTimeDiedWas"
+            app:argType="string"/>
+        <argument
+            android:name="profileBurialInfo"
+            app:argType="string"
+            android:defaultValue="" />
+
+
+
     </fragment>
 
 </navigation>

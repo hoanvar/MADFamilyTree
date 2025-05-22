@@ -21,7 +21,7 @@ data class ProfileDTO(
     val commune2: String? = null,
     val died: Int? = null,
     val date_of_death: Timestamp? = null,
-    val death_anniversary: String? = null,
+    val death_anniversary: Timestamp? = null,
     val age_at_death: Int? = null,
     val burial_info: String? = null,
     val biography: String? = null,

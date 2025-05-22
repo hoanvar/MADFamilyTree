@@ -3,6 +3,8 @@ package com.dung.madfamilytree.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.dung.madfamilytree.R
 import com.dung.madfamilytree.databinding.ProfileSummaryItemBinding
 import com.dung.madfamilytree.dtos.TreeNode
 import java.text.SimpleDateFormat
@@ -11,7 +13,8 @@ import java.util.Locale
 
 class ProfileAdapter(
     private val profiles: List<TreeNode>,
-    private val onAddNewClick: (TreeNode) -> Unit
+    private val onAddNewClick: (TreeNode) -> Unit,
+    private val onProfileClick: (TreeNode) -> Unit
 ) : RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder>() {
 
     inner class ProfileViewHolder(val binding: ProfileSummaryItemBinding) : RecyclerView.ViewHolder(binding.root)
@@ -25,6 +28,19 @@ class ProfileAdapter(
         val node = profiles[position]
         val profile = node.profile
         holder.binding.textView8.text = profile?.name ?: ""
+        
+        // Load avatar image
+        profile?.avatar_url?.let { avatarUrl ->
+            if (avatarUrl.isNotEmpty()) {
+                Glide.with(holder.itemView.context)
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.profile_icon)
+                    .into(holder.binding.imageView6)
+            } else {
+                holder.binding.imageView6.setImageResource(R.drawable.profile_icon)
+            }
+        } ?: holder.binding.imageView6.setImageResource(R.drawable.profile_icon)
+
         // Giới tính
         holder.binding.textView13.text = "GT: ${profile?.gender ?: "?"}"
         // Tuổi
@@ -55,6 +71,9 @@ class ProfileAdapter(
         // Set click listener for add new button
         holder.binding.btnAddNew.setOnClickListener {
             onAddNewClick(node)
+        }
+        holder.binding.root.setOnClickListener {
+            onProfileClick(node)
         }
     }
 
