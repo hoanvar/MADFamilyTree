@@ -40,8 +40,10 @@ class NotificationFragment : Fragment() {
         firestore.collection("LinkRequests")
             .whereEqualTo("toId", userId)
             .whereEqualTo("status", "pending")
-            .addSnapshotListener { _, _ ->
-                refreshNotifications()
+            .addSnapshotListener { snapshot, _ ->
+                if (snapshot != null) {
+                    refreshNotifications()
+                }
             }
     }
 
@@ -165,6 +167,8 @@ class NotificationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        refreshNotifications()
+        if (arguments?.containsKey("event_message") == true) {
+            refreshNotifications()
+        }
     }
 }
