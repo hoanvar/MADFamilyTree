@@ -119,10 +119,10 @@
 
         <!-- Icon số đời -->
         <ImageView
-            android:layout_width="20dp"
+            android:layout_width="16dp"
             android:layout_height="20dp"
-            android:src="@drawable/app_icon"
             android:contentDescription="đời"
+            android:src="@drawable/people"
 
             />
 
@@ -141,7 +141,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/app_icon"
+            android:src="@drawable/person"
             android:contentDescription="thành viên" />
 
         <TextView
