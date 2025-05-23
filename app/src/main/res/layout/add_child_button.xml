@@ -3,8 +3,9 @@
     android:layout_width="30dp"
     android:layout_height="30dp"
     android:background="@drawable/border_black"
-    android:src="@drawable/baseline_add_24"
+    android:src="@drawable/add_25"
     android:scaleType="centerInside"
     android:padding="2dp"
     android:layout_margin="4dp"
-    android:contentDescription="Add child" />
+    android:contentDescription="Add child"
+    />

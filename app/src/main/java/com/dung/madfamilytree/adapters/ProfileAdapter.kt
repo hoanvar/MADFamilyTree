@@ -64,9 +64,18 @@ class ProfileAdapter(
         // Đời (nếu cần truyền vào adapter thì thêm trường, ở đây để trống)
         // Trạng thái sống
         val isAlive = profile?.died == null || profile.died == 0
-        holder.binding.textView16.text = if (isAlive) "●" else "○"
-        // Có thể gán màu cho textView16 nếu muốn (xanh lá cho sống, xám cho mất)
-        // ... binding thêm nếu cần
+        holder.binding.textView16.setImageResource(
+            if (isAlive) R.drawable.baseline_person_24 else R.drawable.baseline_person_off_24
+        )
+        holder.binding.textView16.setColorFilter(
+            if (isAlive) android.graphics.Color.GREEN else android.graphics.Color.GRAY
+        )
+
+        // Trạng thái hôn nhân
+        val isMarried = profile?.marital_status == "Đã kết hôn"
+        holder.binding.textView17.setColorFilter(
+            if (isMarried) android.graphics.Color.RED else android.graphics.Color.WHITE
+        )
 
         // Set click listener for add new button
         holder.binding.btnAddNew.setOnClickListener {

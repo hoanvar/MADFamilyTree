@@ -257,8 +257,8 @@ class FamilyTreeView @JvmOverloads constructor(
             
             addPartnerButton.layoutParams = layoutParams
             // Đặt kích thước nhỏ hơn cho button
-            addPartnerButton.scaleX = 0.5f
-            addPartnerButton.scaleY = 0.5f
+            addPartnerButton.scaleX = 1f
+            addPartnerButton.scaleY = 1f
             femaleNodeContainer.addView(addPartnerButton)
         }
 
@@ -276,13 +276,13 @@ class FamilyTreeView @JvmOverloads constructor(
             LinearLayout.LayoutParams.WRAP_CONTENT
         ).apply {
             leftMargin = 80  // X + 50
-            topMargin = -63  // Y - 30
+            topMargin = -25  // Y - 30
         }
         
         addChildButton.layoutParams = childButtonLayoutParams
         // Thu nhỏ button
-        addChildButton.scaleX = 0.3f
-        addChildButton.scaleY = 0.3f
+        addChildButton.scaleX = 0.5f
+        addChildButton.scaleY = 0.5f
         
         pairView.findViewById<LinearLayout>(R.id.add_child_container).addView(addChildButton)
 
@@ -583,6 +583,7 @@ class FamilyTreeView @JvmOverloads constructor(
     fun setOnAddChildClickListener(listener: (TreeNode) -> Unit) {
         onAddChildClickListener = listener
     }
+
 
 
 } 

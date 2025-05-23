@@ -126,17 +126,21 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
-            <TextView
+
+
+            <ImageView
+                android:id="@+id/textView17"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_favorite_24"
+                android:contentDescription="Trạng thái hôn nhân"/>
+            <ImageView
                 android:id="@+id/textView16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Trạng thái"
-                android:fontFamily="@font/poppins_medium"
-                android:textSize="14sp"
-                android:textColor="@color/white"
-                android:drawablePadding="4dp"
-                android:drawableStart="@drawable/baseline_favorite_24"
-                app:drawableTint="@color/white"/>
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_person_24"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Trạng thái sống"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

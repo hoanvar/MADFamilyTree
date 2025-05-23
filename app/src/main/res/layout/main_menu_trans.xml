@@ -46,6 +46,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:src="@drawable/phahe"
                 />
 <!--                android:tint="@android:color/black"/>-->
             <TextView
@@ -85,8 +86,8 @@
 
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="24dp" />
-            <!--                android:src="@drawable/ic_chart"-->
+                android:layout_height="24dp"
+                android:src="@drawable/thongke"/>
             <!--                android:tint="@android:color/black"/>-->
             <TextView
                 android:layout_width="wrap_content"
