@@ -31,6 +31,7 @@ import com.google.firebase.Timestamp
 import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
 import com.dung.madfamilytree.R
+import android.widget.LinearLayout
 
 class FamilyTreeFragment : Fragment() {
     private val TAG = "FamilyTreeFragment"
@@ -163,16 +164,28 @@ class FamilyTreeFragment : Fragment() {
     }
 
     private fun showAddRelationshipDialog(profileId: String, profileName: String) {
-        val options = arrayOf("Thêm con", "Thêm vợ/chồng")
-        AlertDialog.Builder(requireContext())
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_relationship, null)
+        
+        val addChildButton = dialogView.findViewById<LinearLayout>(R.id.layout_add_child)
+        val addPartnerButton = dialogView.findViewById<LinearLayout>(R.id.layout_add_partner)
+        
+        val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Thêm quan hệ cho $profileName")
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> showAddProfileDialog(profileId, "child")
-                    1 -> checkAndShowAddPartnerDialog(profileId, profileName)
-                }
-            }
-            .show()
+            .setView(dialogView)
+            .setNegativeButton("Hủy") { dialog, _ -> dialog.dismiss() }
+            .create()
+
+        addChildButton.setOnClickListener {
+            dialog.dismiss()
+            showAddProfileDialog(profileId, "child")
+        }
+
+        addPartnerButton.setOnClickListener {
+            dialog.dismiss()
+            checkAndShowAddPartnerDialog(profileId, profileName)
+        }
+
+        dialog.show()
     }
 
     private fun checkAndShowAddPartnerDialog(profileId: String, profileName: String) {

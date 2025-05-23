@@ -4,110 +4,139 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="20dp"
-    app:cardUseCompatPadding="true"
-    android:backgroundTint="@color/family_node_background_blue">
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="4dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/black"
+        android:background="@drawable/profile_card_gradient"
         android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageView6"
-                android:layout_width="76dp"
-                android:layout_height="76dp"
-                android:layout_gravity="center_horizontal"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="16dp"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
                 tools:srcCompat="@tools:sample/avatars" />
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/poppins_bold"
-                android:text="Tên"
-                android:textSize="25sp"
-                android:textStyle="bold"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                android:inputType="textMultiLine"
-                android:textColor="@color/white"/>
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Tên"
+                    android:textSize="22sp"
+                    android:textColor="@color/white"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:lineSpacingExtra="4dp"
+                    android:inputType="textMultiLine"/>
+            </LinearLayout>
 
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+          >
 
             <TextView
                 android:id="@+id/textView13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Giới tính"
-                android:fontFamily="@font/poppins_semibold"
-                android:textSize="18sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="14sp"
                 android:textColor="@color/white"
-                 />
+                android:background="@drawable/info_tag_background"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"/>
 
             <TextView
                 android:id="@+id/textView14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="Tuổi"
-                android:textSize="18sp"
-                android:fontFamily="@font/poppins_semibold"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="14sp"
                 android:textColor="@color/white"
-                />
-            <Button
+                android:background="@drawable/info_tag_background"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"/>
+
+            <ImageButton
                 android:id="@+id/btn_add_new"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:background="@drawable/add_btn"
-                android:fontFamily="@font/poppins_semibold"
-                android:textSize="20sp"
-                android:textColor="@color/white"
-                />
+                android:background="@drawable/circle_button_background"
+                android:contentDescription="Thêm quan hệ"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/baseline_add_24"
+                app:tint="@color/white" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:background="#33FFFFFF"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
             <TextView
                 android:id="@+id/textView15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Số con"
-                android:fontFamily="@font/poppins_semibold"
-                android:textSize="18sp"
-                android:textColor="@color/white"/>
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/baseline_people_24"
+                app:drawableTint="@color/white"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/textView16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trạng thái"
-                android:fontFamily="@font/poppins_semibold"
-                android:textSize="18sp"
-                android:textColor="@color/white"/>
-            <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="41dp"
-                android:layout_height="34dp"
-                tools:srcCompat="@tools:sample/avatars" />
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/baseline_favorite_24"
+                app:drawableTint="@color/white"/>
         </LinearLayout>
-
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

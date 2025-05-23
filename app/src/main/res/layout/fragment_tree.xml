@@ -25,16 +25,18 @@
             android:layout_gravity="center"
             android:layout_marginRight="5dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/back_icon" />
+            android:src="@drawable/back_icon"
+            />
 
         <Button
             android:id="@+id/btn_family_tree"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:fontFamily="@font/poppins_bold"
-            android:text="Cây gia phả"
+            android:text="Gia phả"
             android:textSize="20sp"
             android:layout_marginRight="5dp"
+            android:layout_gravity="center"
             />
 
         <Button
@@ -42,7 +44,9 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:text="Tìm kiếm"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_gravity="right"
+/>
     </LinearLayout>
     <com.dung.madfamilytree.views.custom.FamilyTreeView
         android:id="@+id/familyTreeView"
