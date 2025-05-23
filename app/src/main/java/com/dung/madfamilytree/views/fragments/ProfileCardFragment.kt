@@ -27,6 +27,7 @@ import SupabaseClientProvider
 
 import android.app.AlertDialog
 
+import android.app.AlertDialog
 import com.dung.madfamilytree.dtos.Province
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.Dispatchers
@@ -600,6 +601,7 @@ private fun setupSpinners() {
                     commune2 = binding.spinnerCommune2.selectedItem?.toString() ?: "",
                     died = if (binding.switchDeceased.isChecked) 1 else 0,
                     date_of_death = parseDate(binding.etDateOfDeath.text.toString()),
+//                    death_anniversary = binding.etDeathAnniversary.text.toString(),
                     death_anniversary = parseDate(binding.etDeathAnniversary.text.toString()),
                     age_at_death = binding.etAgeAtDeath.text.toString().toIntOrNull(),
                     burial_info = binding.etBurialInfo.text.toString(),

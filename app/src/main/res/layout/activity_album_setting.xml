@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:id="@+id/share"
+            android:id="@+id/grand_permission"
             android:visibility="@{viewModel.owner ? View.VISIBLE : View.GONE}"
             android:text="Cấp quyền" />
         <Button

@@ -63,6 +63,7 @@ class AlbumSettingActivity : BaseActivity() {
         binding = ActivityAlbumSettingBinding.inflate(layoutInflater)
 
         binding.viewModel = viewModel
+        binding.lifecycleOwner = this
         setSupportActionBar(binding.albumSettingToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Cài đặt Album"
@@ -80,8 +81,10 @@ class AlbumSettingActivity : BaseActivity() {
             updateAlbumRegistorForActivityResult.launch(intent)
         }
 
-        binding.share.setOnClickListener {
-
+        binding.grandPermission.setOnClickListener {
+            val intent = Intent(this,AlbumGrandPermissionActivity::class.java)
+            intent.putExtra(AlbumGrandPermissionActivity.ALBUM_ID,viewModel.albumId)
+            startActivity(intent)
         }
 
         binding.deleteAlbumBtn.setOnClickListener {
