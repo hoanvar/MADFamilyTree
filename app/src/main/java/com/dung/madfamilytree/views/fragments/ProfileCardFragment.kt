@@ -24,10 +24,13 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import SupabaseClientProvider
+<<<<<<< HEAD
 import android.app.AlertDialog
+=======
 import com.dung.madfamilytree.dtos.Province
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Dispatcher
+>>>>>>> e1528155cb3d64379074a4253460be15c2eae100
 
 class ProfileCardFragment : Fragment() {
 
@@ -348,7 +351,7 @@ class ProfileCardFragment : Fragment() {
             }
         }
     }
-
+    
     private fun setupProfileData() {
         binding.etName.setText(args.profileName)
         binding.etAnotherName.setText(args.profileAnotherName)
@@ -611,8 +614,11 @@ private fun setupSpinners() {
                     commune2 = binding.spinnerCommune2.selectedItem?.toString() ?: "",
                     died = if (binding.switchDeceased.isChecked) 1 else 0,
                     date_of_death = parseDate(binding.etDateOfDeath.text.toString()),
+<<<<<<< HEAD
 //                    death_anniversary = binding.etDeathAnniversary.text.toString(),
+=======
                     death_anniversary = parseDate(binding.etDeathAnniversary.text.toString()),
+>>>>>>> e1528155cb3d64379074a4253460be15c2eae100
                     age_at_death = binding.etAgeAtDeath.text.toString().toIntOrNull(),
                     burial_info = binding.etBurialInfo.text.toString(),
                     biography = binding.tvBiography.text.toString(),

@@ -45,8 +45,8 @@
             >
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="24dp"/>
-<!--                android:src="@drawable/ic_family_tree"-->
+                android:layout_height="24dp"
+                />
 <!--                android:tint="@android:color/black"/>-->
             <TextView
                 android:layout_width="wrap_content"
@@ -123,6 +123,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:src="@drawable/album_icon"
                 />
             <!--                android:src="@drawable/ic_album"-->
             <!--                android:tint="@android:color/black"/>-->
@@ -159,7 +160,8 @@
 
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:layout_height="24dp"
+                android:src="@drawable/sukien"/>
             <!--                android:src="@drawable/ic_event"-->
             <!--                android:tint="@android:color/black"/>-->
             <TextView
@@ -193,7 +195,8 @@
             android:focusable="true">
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="24dp"/>
+                android:layout_height="24dp"
+                android:src="@drawable/chiase"/>
 <!--                android:src="@drawable/ic_share"-->
 <!--                android:tint="@android:color/black"/>-->
             <TextView
@@ -229,7 +232,8 @@
 
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:layout_height="24dp"
+                android:src="@drawable/search_icon"/>
             <!--                android:src="@drawable/ic_search"-->
             <!--                android:tint="@android:color/black"/>-->
             <TextView
