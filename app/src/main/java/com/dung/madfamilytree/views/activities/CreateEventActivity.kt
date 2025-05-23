@@ -52,11 +52,6 @@ class CreateEventActivity : AppCompatActivity() {
     private fun setupNotificationSpinner() {
         val notificationOptions = arrayOf(
             "Không thông báo",
-            "15 phút trước",
-            "30 phút trước",
-            "1 giờ trước",
-            "3 giờ trước",
-            "12 giờ trước",
             "1 ngày trước",
             "3 ngày trước",
             "7 ngày trước"
@@ -75,7 +70,7 @@ class CreateEventActivity : AppCompatActivity() {
         // Lắng nghe sự kiện khi người dùng chọn ngày
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
-            // Lưu ngày vào EditText
+
             pickedDate=selectedDate
         }
     }
