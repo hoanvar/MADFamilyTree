@@ -23,9 +23,6 @@
             android:id="@+id/action_homeFragment_to_eventsFragment"
             app:destination="@id/eventsFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_shareFragment"
-            app:destination="@id/shareFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_accountSearchFragment"
             app:destination="@id/accountSearchFragment" />
         <action
@@ -34,6 +31,9 @@
         <action
             android:id="@+id/action_homeFragment_to_notificationFragment"
             app:destination="@id/notificationFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_linkResult"
+            app:destination="@id/linkResult" />
     </fragment>
 
     <fragment
@@ -69,12 +69,6 @@
         tools:layout="@layout/fragment_events" />
 
     <fragment
-        android:id="@+id/shareFragment"
-        android:name="com.dung.madfamilytree.views.fragments.ShareFragment"
-        android:label="fragment_share"
-        tools:layout="@layout/fragment_share" />
-
-    <fragment
         android:id="@+id/statisticsFragment"
         android:name="com.dung.madfamilytree.views.fragments.StatisticsFragment"
         android:label="fragment_statistics"
@@ -103,6 +97,9 @@
             app:destination="@id/requestDetailFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_notificationFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/requestDetailFragment"
@@ -123,9 +120,6 @@
         <argument
             android:name="fromId"
             app:argType="string" />
-        <action
-            android:id="@+id/action_requestDetailFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -227,6 +221,9 @@
         <action
             android:id="@+id/action_accountSearchFragment_to_profileDetail"
             app:destination="@id/profileDetail" />
+        <action
+            android:id="@+id/action_accountSearchFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileDetail"
@@ -239,12 +236,19 @@
         <action
             android:id="@+id/action_profileDetail_to_relationInfo"
             app:destination="@id/relationInfo" />
+        <action
+            android:id="@+id/action_profileDetail_to_accountSearchFragment"
+            app:destination="@id/accountSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/personalInfo"
         android:name="com.dung.madfamilytree.views.fragments.PersonalInfoFragment"
         android:label="Thông tin cá nhân"
-        tools:layout="@layout/fragment_personal_info" />
+        tools:layout="@layout/fragment_personal_info" >
+        <action
+            android:id="@+id/action_personalInfo_self"
+            app:destination="@id/personalInfo" />
+    </fragment>
     <fragment
         android:id="@+id/relationInfo"
         android:name="com.dung.madfamilytree.views.fragments.RelationInfoFragment"

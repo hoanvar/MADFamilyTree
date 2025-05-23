@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.dung.madfamilytree.R
 import com.dung.madfamilytree.adapters.ViewPagerAdapter
 import com.dung.madfamilytree.databinding.FragmentProfileDetailBinding
@@ -25,6 +26,11 @@ class ProfileDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack() //
+        }
+
         // Gán tên người dùng
         FirebaseFirestore.getInstance().collection("Profile").document(profileId)
             .get()
@@ -40,11 +46,11 @@ class ProfileDetailFragment : Fragment() {
             when (position) {
                 0 -> {
                     tab.text = "Cá nhân"
-                    tab.setIcon(R.drawable.canhan_inf)
+//                    tab.setIcon(R.drawable.canhan_inf)
                 }
                 1 -> {
                     tab.text = "Gia đình"
-                    tab.setIcon(R.drawable.quanhe_inf)
+//                    tab.setIcon(R.drawable.quanhe_inf)
                 }
             }
         }.attach()

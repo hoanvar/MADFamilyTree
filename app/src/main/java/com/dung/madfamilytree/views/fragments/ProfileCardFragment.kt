@@ -24,13 +24,14 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import SupabaseClientProvider
-<<<<<<< HEAD
+
 import android.app.AlertDialog
-=======
+
 import com.dung.madfamilytree.dtos.Province
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Dispatcher
->>>>>>> e1528155cb3d64379074a4253460be15c2eae100
+
 
 class ProfileCardFragment : Fragment() {
 
@@ -100,6 +101,8 @@ class ProfileCardFragment : Fragment() {
             pickImageLauncher.launch("image/*")
         }
     }
+
+    //CN ghep noi
     // set upClaimProfileButton
     private fun setupClaimProfileButton() {
         val currentUserId = Utility.accountId ?: return
@@ -160,28 +163,6 @@ class ProfileCardFragment : Fragment() {
             showLinkAccountDialog()
         }
     }
-    // kiem tra trang thai lien ket
-//    private fun checkLinkStatus(profileId: String) {
-//        val currentUserId = Utility.accountId ?: return
-//        val linkId = "${currentUserId}_$profileId"
-//
-//
-//        Utility.db?.collection("LinkRequests")
-//            ?.document(linkId)
-//            ?.get()
-//            ?.addOnSuccessListener { doc ->
-//                if (doc.exists()) {
-//                    when (doc.getString("status")) {
-//                        "pending" -> updateLinkButtonState("pending")
-//                        "success" -> updateLinkButtonState("success")
-//                        "declined" -> updateLinkButtonState("declined")
-//                        else -> updateLinkButtonState("default")
-//                    }
-//                } else {
-//                    updateLinkButtonState("default")
-//                }
-//            }
-//    }
     private fun checkLinkStatus(profileId: String) {
         val currentUserId = Utility.accountId ?: return
 
@@ -253,12 +234,15 @@ class ProfileCardFragment : Fragment() {
         val currentUserId = Utility.accountId ?: return
         val profileId = args.profileId
         val fromProfileId = Utility.myProfileId ?: return
+        Log.d("LinkDebug", "currentUserId: $currentUserId, fromProfileId: $fromProfileId, username: $username")
+
 
         Utility.db?.collection("Account")
             ?.whereEqualTo("username", username)
             ?.get()
             ?.addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
+                    Log.e("LinkDebug", "Thiếu thông tin người gửi")
                     showNotFoundDialog(username)
                     return@addOnSuccessListener
                 }
@@ -268,6 +252,7 @@ class ProfileCardFragment : Fragment() {
 
                 // Tạo ID duy nhất theo từng profile gửi đi
                 val linkId = "${currentUserId}_${targetId}_${args.profileId}_${fromProfileId}"
+
 
                 // Kiểm tra trạng thái yêu cầu liên kết
                 Utility.db?.collection("LinkRequests")
@@ -308,7 +293,6 @@ class ProfileCardFragment : Fragment() {
     }
     private fun sendNewLinkRequest(linkId: String, fromId: String, toId: String, profileId: String) {
 
-
         val linkRequest = hashMapOf(
             "fromId" to fromId,
             "toId" to toId,
@@ -317,7 +301,8 @@ class ProfileCardFragment : Fragment() {
             "status" to "pending",
             "timestamp" to Timestamp.now()
         )
-
+        Log.d("LinkDebug", "Sending link request:")
+        Log.d("LinkDebug", "fromId: $fromId, toId: $toId, profileId: $profileId, linkId: $linkId")
         Utility.db?.collection("LinkRequests")
             ?.document(linkId)
             ?.set(linkRequest)
@@ -327,7 +312,6 @@ class ProfileCardFragment : Fragment() {
                 updateLinkButtonState("pending")
             }
             ?.addOnFailureListener {
-
                 Toast.makeText(requireContext(), "Gửi yêu cầu thất bại", Toast.LENGTH_SHORT).show()
             }
     }
@@ -340,6 +324,8 @@ class ProfileCardFragment : Fragment() {
             .setPositiveButton("Thử lại") { dialog, _ -> dialog.dismiss() }
             .show()
     }
+    //    -------------
+
     private fun setupImagePicker() {
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
@@ -614,11 +600,7 @@ private fun setupSpinners() {
                     commune2 = binding.spinnerCommune2.selectedItem?.toString() ?: "",
                     died = if (binding.switchDeceased.isChecked) 1 else 0,
                     date_of_death = parseDate(binding.etDateOfDeath.text.toString()),
-<<<<<<< HEAD
-//                    death_anniversary = binding.etDeathAnniversary.text.toString(),
-=======
                     death_anniversary = parseDate(binding.etDeathAnniversary.text.toString()),
->>>>>>> e1528155cb3d64379074a4253460be15c2eae100
                     age_at_death = binding.etAgeAtDeath.text.toString().toIntOrNull(),
                     burial_info = binding.etBurialInfo.text.toString(),
                     biography = binding.tvBiography.text.toString(),

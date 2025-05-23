@@ -1,250 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
-    tools:context=".views.fragments.PersonalInfoFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_background"
+        tools:context=".views.fragments.PersonalInfoFragment">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <ImageView
-                    android:id="@+id/avatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/avatar" />
-
-                <TextView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Họ và tên"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/etName"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Tên khác"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/etName2"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-                <TextView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Giới tính"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/etGender"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-
-                <TextView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Ngày tháng năm sinh"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/etDateOfBirth"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Tình trạng hôn nhân"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/etMarried"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Trình độ học vấn"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/etEducation"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Nguyên quán"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/etAddress1"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Nghề nghiệp"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/etJob"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Địa chỉ hiện tại"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/etAddress2"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@drawable/inf_box" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Tiểu sử"
-                    android:textSize="@dimen/small_text_size"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/etStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/inf_box" />
-
+                <!-- Thông tin cá nhân sẽ được thêm động bằng item_child_card.xml -->
                 <LinearLayout
+                    android:id="@+id/infoContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
 
-                    <TextView
-                        android:id="@+id/etDied"
-                        android:layout_width="265dp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="Đã mất?"
-                        android:textSize="@dimen/small_text_size"
-                        android:textStyle="bold" />
-
-                    <Switch
-                        android:id="@+id/switch1"
-                        android:layout_width="158dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-                </LinearLayout>
-
-                <!-- Gộp ngày mất và ngày giỗ vào 1 layout -->
+                <!-- Ngày mất và ngày giỗ -->
                 <LinearLayout
                     android:id="@+id/layoutDeathInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_marginTop="8dp">
 
                     <TextView
-                        android:id="@+id/ngaymat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
                         android:text="Ngày mất (DL)"
-                        android:textSize="@dimen/small_text_size"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/ngaymat2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/inf_box" />
+                        android:background="@drawable/edit_text_background"
+                        android:padding="8dp" />
 
                     <TextView
-                        android:id="@+id/ngaygio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
                         android:text="Ngày giỗ (ÂL)"
-                        android:textSize="@dimen/small_text_size"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp" />
 
                     <TextView
                         android:id="@+id/ngaygio2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/inf_box" />
+                        android:background="@drawable/edit_text_background"
+                        android:padding="8dp" />
                 </LinearLayout>
 
-
             </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
-
-</FrameLayout>
+        </ScrollView>
+    </FrameLayout>
+</layout>

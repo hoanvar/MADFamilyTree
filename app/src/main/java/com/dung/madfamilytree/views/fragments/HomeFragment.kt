@@ -300,7 +300,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.mainMenu.chiase.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_shareFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_linkResult)
         }
 
         binding.mainMenu.timkiem.setOnClickListener {
@@ -310,6 +310,21 @@ class HomeFragment : Fragment() {
         binding.mainMenu.thongke.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_statisticsFragment)
         }
+
+        binding.mainMenu.timkiem.setOnClickListener {
+            findNavController().navigate(
+                R.id.accountSearchFragment,  // ID fragment
+                null,
+                androidx.navigation.NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .setRestoreState(true)
+                    .setEnterAnim(android.R.anim.slide_in_left)
+                    .setExitAnim(android.R.anim.slide_out_right)
+                    .setPopUpTo(R.id.homeFragment, false)  // giữ lại HomeFragment trong back stack
+                    .build()
+            )
+        }
+
     }
 
     override fun onDestroyView() {

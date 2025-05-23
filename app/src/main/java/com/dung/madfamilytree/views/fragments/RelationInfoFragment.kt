@@ -1,125 +1,99 @@
 package com.dung.madfamilytree.views.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.dung.madfamilytree.R
 import com.dung.madfamilytree.databinding.FragmentRelationInfoBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RelationInfoFragment : Fragment() {
     private lateinit var profileId: String
     private lateinit var binding: FragmentRelationInfoBinding
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentRelationInfoBinding.inflate(inflater, container, false)
         profileId = arguments?.getString("PROFILE_ID") ?: ""
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val db = FirebaseFirestore.getInstance()
+        super.onViewCreated(view, savedInstanceState)
+        loadNodeInfo()
+        loadParentInfo()
+    }
 
+    private fun loadNodeInfo() {
         db.collection("Node")
             .whereEqualTo("id_profile", profileId)
             .get()
             .addOnSuccessListener { nodeSnap ->
-                val node = nodeSnap.firstOrNull()
-                if (node != null) {
+                val node = nodeSnap.firstOrNull() ?: return@addOnSuccessListener
 
+                // Lấy thông tin đối tác
+                val partnerId = node.getString("id_partner")
+                partnerId?.let { loadProfileCard(it, binding.llPartner) }
 
-//                    val fatherNodeId = node.getString("id_father")
-//                    val motherNodeId = node.getString("id_mother")
-
-// Load thông tin bố
-//                    fatherNodeId?.let { fid ->
-//                        db.collection("Node").document(fid).get()
-//                            .addOnSuccessListener { fatherNode ->
-//                                val fatherProfileId = fatherNode.getString("id_profile")
-//                                fatherProfileId?.let {
-//                                    db.collection("Profile").document(it).get()
-//                                        .addOnSuccessListener { doc ->
-//                                            val name = doc.getString("name") ?: "Không rõ"
-//                                            val dob = doc.getTimestamp("date_of_birth")?.toDate()
-//                                            val dobStr = dob?.let {
-//                                                java.text.SimpleDateFormat(
-//                                                    "dd/MM/yyyy",
-//                                                    java.util.Locale.getDefault()
-//                                                ).format(it)
-//                                            } ?: "Không rõ"
-//                                            binding.tvFather.text = "$name\nNgày sinh: $dobStr"
-//                                        }
-//                                }
-//                            }
-//                    }
-
-// Load thông tin mẹ
-//                    motherNodeId?.let { mid ->
-//                        db.collection("Node").document(mid).get()
-//                            .addOnSuccessListener { motherNode ->
-//                                val motherProfileId = motherNode.getString("id_profile")
-//                                motherProfileId?.let {
-//                                    db.collection("Profile").document(it).get()
-//                                        .addOnSuccessListener { doc ->
-//                                            val name = doc.getString("name") ?: "Không rõ"
-//                                            val dob = doc.getTimestamp("date_of_birth")?.toDate()
-//                                            val dobStr = dob?.let {
-//                                                java.text.SimpleDateFormat(
-//                                                    "dd/MM/yyyy",
-//                                                    java.util.Locale.getDefault()
-//                                                ).format(it)
-//                                            } ?: "Không rõ"
-//                                            binding.tvMother.text = "$name\nNgày sinh: $dobStr"
-//                                        }
-//                                }
-//                            }
-//                    }
-
-                    val partnerId = node.getString("id_partner")
-                    val children = node.get("id_children") as? List<String> ?: emptyList()
-
-                    // Lấy đối tác
-                    partnerId?.let {
-                        db.collection("Profile").document(it).get()
-                            .addOnSuccessListener { doc ->
-                                binding.tvPartner.text =
-                                    doc.getString("name") + "\n" + doc.getString("date_of_birth")
-                            }
-                    }
-
-                    // Lấy danh sách con
-                    val childrenLayout = binding.llChildren
-                    children.forEach { childId ->
-                        db.collection("Profile").document(childId).get()
-                            .addOnSuccessListener { doc ->
-                                val childView = LayoutInflater.from(context)
-                                    .inflate(R.layout.item_child_card, null)
-                                val tvName: TextView = childView.findViewById(R.id.tvName)
-                                val tvInfo: TextView = childView.findViewById(R.id.tvDetails)
-                                tvName.text = doc.getString("name")
-
-                                val dob = doc.getTimestamp("date_of_birth")?.toDate()
-                                val dobStr = dob?.let {
-                                    java.text.SimpleDateFormat(
-                                        "dd/MM/yyyy",
-                                        java.util.Locale.getDefault()
-                                    ).format(it)
-                                } ?: "Không rõ"
-                                tvInfo.text = "Ngày sinh: $dobStr"
-
-                                childrenLayout.addView(childView)
-                            }
-                    }
+                // Lấy thông tin con cái
+                val children = node.get("id_children") as? List<String> ?: emptyList()
+                children.forEach { childId ->
+                    loadProfileCard(childId, binding.llChildren)
                 }
             }
+    }
+
+    private fun loadParentInfo() {
+        db.collection("Node")
+            .whereArrayContains("id_children", profileId)
+            .get()
+            .addOnSuccessListener { nodes ->
+                for (doc in nodes) {
+                    val parentId = doc.getString("id_profile") ?: continue
+                    db.collection("Profile").document(parentId)
+                        .get()
+                        .addOnSuccessListener { profile ->
+                            val gender = profile.getString("gender") ?: ""
+                            val layout = if (gender == "Nam") binding.llFather else binding.llMother
+                            addProfileToLayout(profile, layout)
+                        }
+                }
+            }
+    }
+
+    private fun loadProfileCard(profileId: String, layout: LinearLayout) {
+        db.collection("Profile").document(profileId)
+            .get()
+            .addOnSuccessListener { doc ->
+                addProfileToLayout(doc, layout)
+            }
+    }
+
+    private fun addProfileToLayout(doc: com.google.firebase.firestore.DocumentSnapshot, layout: LinearLayout) {
+        val view = LayoutInflater.from(context).inflate(R.layout.item_child_card, null)
+        val tvName = view.findViewById<TextView>(R.id.tvName)
+        val tvInfo = view.findViewById<TextView>(R.id.tvDetails)
+
+        val name = doc.getString("name") ?: "Không rõ"
+        val dob = doc.getTimestamp("date_of_birth")?.toDate()
+        val dobStr = dob?.let {
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it)
+        } ?: "Không rõ"
+
+        tvName.text = name
+        tvInfo.text = "Ngày sinh: $dobStr"
+
+        layout.addView(view)
     }
 
     companion object {
@@ -132,6 +106,3 @@ class RelationInfoFragment : Fragment() {
         }
     }
 }
-
-
-

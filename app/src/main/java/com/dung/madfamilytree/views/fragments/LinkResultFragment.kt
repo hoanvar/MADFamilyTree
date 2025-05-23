@@ -25,6 +25,7 @@ class LinkResultFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_link_result, container, false)
         recyclerView = view.findViewById(R.id.recyclerLinkResults)
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = LinkResultAdapter(resultList)
         recyclerView.adapter = adapter
@@ -38,26 +39,39 @@ class LinkResultFragment : Fragment() {
     }
 
     private fun loadLinkResults() {
-        val currentUserId = "profileId1" // thay thế ID thật
+        val currentUserId = Utility.accountId ?: return
 
         Utility.db?.collection("LinkRequests")
             ?.whereEqualTo("fromId", currentUserId)
             ?.get()
             ?.addOnSuccessListener { documents ->
                 resultList.clear()
+
+                if (documents.isEmpty) {
+                    adapter.notifyDataSetChanged()
+                    return@addOnSuccessListener
+                }
+
+                val pendingTasks = mutableListOf<com.google.android.gms.tasks.Task<*>>()
+
                 for (doc in documents) {
                     val toId = doc.getString("toId") ?: continue
                     val status = doc.getString("status") ?: "pending"
 
-                    Utility.db?.collection("Profile")
-                        ?.document(toId)
-                        ?.get()
-                        ?.addOnSuccessListener { profileDoc ->
-                            val name = profileDoc.getString("name") ?: "Không rõ"
-                            resultList.add(LinkResult(name, status))
-                            adapter.notifyDataSetChanged()
+                    val task = Utility.db?.collection("Account")?.document(toId)?.get()
+                        ?.addOnSuccessListener { accountDoc ->
+                            val username = accountDoc.getString("username") ?: "Không rõ"
+                            resultList.add(LinkResult(username, status))
                         }
+
+                    if (task != null) pendingTasks.add(task)
                 }
+
+                com.google.android.gms.tasks.Tasks.whenAllComplete(pendingTasks)
+                    .addOnSuccessListener {
+                        adapter.notifyDataSetChanged()
+                    }
             }
     }
+
 }

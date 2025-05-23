@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import com.dung.madfamilytree.adapters.AccountSearchAdapter
 import com.dung.madfamilytree.databinding.FragmentAccountSearchBinding
@@ -20,6 +21,7 @@ class AccountSearchFragment : Fragment() {
     private lateinit var binding: FragmentAccountSearchBinding
     private lateinit var adapter: AccountSearchAdapter
     private val db = FirebaseFirestore.getInstance()
+    private val btnBack by lazy { requireView().findViewById<ImageButton>(R.id.btn_back) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentAccountSearchBinding.inflate(inflater, container, false)
@@ -43,6 +45,11 @@ class AccountSearchFragment : Fragment() {
             } else {
                 Toast.makeText(context, "Vui lòng nhập tên để tìm kiếm", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        btnBack.setOnClickListener {
+            // Navigate back
+            requireActivity().onBackPressed()
         }
     }
 
